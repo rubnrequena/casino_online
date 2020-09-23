@@ -2,7 +2,7 @@ import Vue from "vue";
 import axios from "axios";
 
 const devURL = "http://192.168.1.11:3000";
-const prodUrl = "https://216.128.130.103:4444";
+const prodUrl = "https://api.caribeapuesta.com";
 const baseURL = process.env.NODE_ENV == "development" ? devURL : prodUrl;
 
 import store from "../store";
