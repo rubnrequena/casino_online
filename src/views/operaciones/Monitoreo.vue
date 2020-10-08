@@ -12,16 +12,31 @@
         <v-icon>mdi-refresh</v-icon>
         {{tiemposLabel[tiempoActualizacion]}}
       </v-btn>
-      <sorteo-picker v-model="sorteo" @close="sorteoDialog=false" @submit="buscarVentas">
-        <template v-slot:default="{sorteo,click}">
-          <v-btn outlined text @click="click">
-            <v-icon left>mdi-calendar-search</v-icon>
-            Sorteo: {{sorteo.descripcion}}
-          </v-btn>
-        </template>
-      </sorteo-picker>
     </v-app-bar>
-
+    <v-container>
+      <v-row>
+        <v-col>
+          <sorteo-picker v-model="sorteo" @close="sorteoDialog=false" @submit="buscarVentas">
+            <template v-slot:default="{sorteo,click}">
+              <v-btn block outlined text @click="click">
+                <v-icon left>mdi-calendar-search</v-icon>
+                Sorteo: {{sorteo.descripcion}}
+              </v-btn>
+            </template>
+          </sorteo-picker>
+        </v-col>
+        <v-col>
+          <moneda-picker v-model="moneda" @change="buscarVentas"></moneda-picker>
+        </v-col>
+        <!-- <v-col>
+          <v-spacer></v-spacer>
+          <v-btn text block outlined>
+            Moneda:
+            <span class="text-uppercase">{{moneda.nombre}} ({{moneda.siglas}})</span>
+          </v-btn>
+        </v-col>-->
+      </v-row>
+    </v-container>
     <v-tabs v-model="tab" background-color="deep-purple accent-4" class="elevation-2" dark>
       <v-tabs-slider></v-tabs-slider>
 
@@ -91,7 +106,7 @@
 
 <script>
 import AdminTicketsUsuario from "@/components/ticket/admin-tickets-usuario";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   components: {
     "admin-tickets-usuario": AdminTicketsUsuario
@@ -127,11 +142,22 @@ export default {
       ticketsUsuario: [],
       totalJugado: 0,
       totalJugadas: 0,
+
       tiempoActualizacion: 1,
       tiemposLabel: ["M", "5S", "10S", "30S"],
       tiemposNum: [0, 5000, 10000, 30000],
-      tiemposInterval: 0
+      tiemposInterval: 0,
+
+      moneda: {
+        nombre: "",
+        siglas: ""
+      }
     };
+  },
+  computed: {
+    ...mapState("auth", {
+      monedas: state => state.usuario.moneda
+    })
   },
   methods: {
     ...mapActions("ticket", [
@@ -143,7 +169,8 @@ export default {
       clearTimeout(this.tiemposInterval);
       this.monitor_admin({
         sorteo: this.sorteo._id,
-        rol: this.rol
+        rol: this.rol,
+        moneda: this.moneda.siglas
       }).then(monitor => {
         this.totalJugado = monitor.reduce((prev, venta) => {
           return prev + venta.jugado;
@@ -157,7 +184,10 @@ export default {
         this.ventas = monitor;
       });
 
-      this.monitor_numero(this.sorteo._id).then(numeros => {
+      this.monitor_numero({
+        sorteo: this.sorteo._id,
+        moneda: this.moneda.siglas
+      }).then(numeros => {
         numeros.forEach(venta => {
           venta.pr_premio = (venta.premio * 100) / this.totalJugado;
           venta.pr_jugado = (venta.jugado * 100) / this.totalJugado;
@@ -193,6 +223,10 @@ export default {
         clearTimeout(this.tiemposInterval);
       }
     }
+  },
+  mounted() {
+    let moneda = this.monedas.find(moneda => moneda.principal);
+    if (moneda) this.moneda = moneda;
   }
 };
 </script>

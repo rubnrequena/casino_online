@@ -5,12 +5,13 @@ export default {
   state: {},
   mutations: {},
   actions: {
-    monitor_admin(store, { sorteo, rol }) {
-      return ticketApi.monitor.admin(sorteo, rol);
+    monitor_admin(store, { sorteo, rol, moneda }) {
+      return ticketApi.monitor.admin(sorteo, rol, moneda);
     },
-    monitor_numero(store, sorteo) {
-      return ticketApi.monitor.numero(sorteo);
+    monitor_numero(store, { sorteo, moneda }) {
+      return ticketApi.monitor.numero(sorteo, moneda);
     },
+
     admin_tickets(store, { sorteo, usuario }) {
       return ticketApi.monitor.admin_tickets(sorteo, usuario);
     },

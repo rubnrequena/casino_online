@@ -5,14 +5,14 @@ export default {
   state: {},
   mutations: {},
   actions: {
-    usuario(store, { usuario, desde, hasta }) {
-      return reporteApi.usuarios(usuario, desde, hasta);
+    usuario(store, { usuario, desde, hasta, moneda }) {
+      return reporteApi.usuarios(usuario, desde, hasta, moneda);
     },
-    operadoras(store, { usuario, desde, hasta }) {
-      return reporteApi.operadoras(usuario, desde, hasta);
+    operadoras(store, { usuario, desde, hasta, moneda }) {
+      return reporteApi.operadoras(usuario, desde, hasta, moneda);
     },
-    usuario_negativo(store, { usuario, desde, hasta }) {
-      return reporteApi.negativos.usuarios(usuario, desde, hasta);
+    usuario_negativo(store, { usuario, desde, hasta, moneda }) {
+      return reporteApi.negativos.usuarios(usuario, desde, hasta, moneda);
     },
   },
 };

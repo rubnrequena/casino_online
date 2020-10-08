@@ -2,14 +2,15 @@ const { getHandler } = require("./repositorio");
 
 module.exports = {
   monitor: {
-    admin(sorteo, rol) {
-      return getHandler("/ticket/monitor/admin", { sorteo, rol });
+    admin(sorteo, rol, moneda) {
+      return getHandler("/ticket/monitor/admin", { sorteo, rol, moneda });
     },
-    numero(sorteo) {
-      return getHandler("/ticket/monitor/numero", { sorteo }).then((data) =>
-        data.sort((a, b) => {
-          return parseInt(a._id) - parseInt(b._id);
-        })
+    numero(sorteo, moneda) {
+      return getHandler("/ticket/monitor/numero", { sorteo, moneda }).then(
+        (data) =>
+          data.sort((a, b) => {
+            return parseInt(a._id) - parseInt(b._id);
+          })
       );
     },
     admin_tickets(sorteo, usuario) {

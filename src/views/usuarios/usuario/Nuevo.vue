@@ -16,7 +16,7 @@
     </v-app-bar>
     <v-container>
       Usuario Padre:
-      <usuario-buscar v-model="padre"></usuario-buscar>
+      <usuario-buscar v-model="padre" @change="seleccionarMonedaPredeterminada"></usuario-buscar>
       <form id="nuevo-form" v-if="padre._id" @submit.prevent="onSubmit">
         <v-select v-model="rolHijo" v-if="padre.rol=='master'" label="Rol" :items="usuariosMaster"></v-select>
         <v-subheader>Cuenta</v-subheader>
@@ -79,6 +79,7 @@
         <v-subheader>Otros</v-subheader>
         <v-select
           v-model="usuario.moneda"
+          :multiple="!soportaMultimonedas"
           label="Moneda"
           :items="monedas"
           item-text="nombre"
@@ -103,7 +104,8 @@ export default {
       usuario: {
         comision: 0,
         participacion: 0,
-        utilidad: 0
+        utilidad: 0,
+        moneda: []
       },
       listaPermisos: [],
       usuariosMaster: [
@@ -120,7 +122,10 @@ export default {
     ...mapState("auth", {
       rol: state => state.usuario.rol,
       permisosUsuario: state => state.permisosUsuario
-    })
+    }),
+    soportaMultimonedas() {
+      return this.padre.rol == "agente" || this.padre.rol == "grupo";
+    }
   },
   methods: {
     ...mapActions("usuario", ["nuevo", "permisos_todos"]),
@@ -164,13 +169,18 @@ export default {
     },
     async tengoPermiso() {
       return true;
+    },
+    seleccionarMonedaPredeterminada() {
+      let m = this.monedas.find(m => m.principal == true);
+      if (this.soportaMultimonedas) {
+        this.usuario.moneda = m.siglas;
+      } else {
+        this.usuario.moneda = [m.siglas];
+      }
     }
   },
   mounted() {
-    this.getMonedas().then(() => {
-      let m = this.monedas.find(m => m.principal == true);
-      this.usuario.moneda = m.siglas;
-    });
+    this.getMonedas().then(this.seleccionarMonedaPredeterminada);
     this.permisos_lista().then(() => {
       this.listaPermisos = [this.permisos, ...this.permisosUsuario];
       this.usuario.permisos = this.listaPermisos[0]._id;

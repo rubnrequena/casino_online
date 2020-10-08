@@ -1,23 +1,12 @@
 <template>
   <div>
-    <v-toolbar dark dense src="/img/chart-header.png">
-      <btn-atras label="Reporte Usuarios"></btn-atras>
+    <v-toolbar dark dense src="https://picsum.photos/1000/100">
+      <btn-atras label="Reporte Operadoras"></btn-atras>
       <v-spacer></v-spacer>
       <v-btn @click="relacion=!relacion" outlined>
         <v-icon>mdi-percent</v-icon>Relacion
       </v-btn>
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn outlined dark v-bind="attrs" v-on="on">Moneda</v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item @click="relacion=false">
-              <v-list-item-title>VES</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
     </v-toolbar>
     <v-row>
       <v-col>
@@ -136,6 +125,7 @@ import { hoy } from "../../utils/date-util";
 export default {
   data() {
     return {
+      moneda: {},
       relacion: false,
       desde: hoy,
       hasta: hoy,
@@ -185,7 +175,8 @@ export default {
       this.get_reporte({
         usuario: usuarioId,
         desde: this.desde,
-        hasta: this.hasta
+        hasta: this.hasta,
+        moneda: this.moneda.siglas
       }).then(reportes => {
         this.reporte = reportes;
 
