@@ -13,55 +13,34 @@
       </v-btn>
     </v-toolbar>
     <v-row>
-      <v-col cols="12" md="6">
-        <v-simple-table>
-          <tbody>
-            <tr>
-              <td>Comerciales:</td>
-              <td>{{stats.comerciales}}</td>
-            </tr>
-            <tr>
-              <td>Bancas:</td>
-              <td>{{stats.bancas}}</td>
-            </tr>
-            <tr>
-              <td>Grupos:</td>
-              <td>{{stats.grupos}}</td>
-            </tr>
-            <tr>
-              <td>Taquillas:</td>
-              <td>{{stats.taquillas}}</td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-simple-table>
-          <tbody>
-            <tr>
-              <td>Agentes:</td>
-              <td>{{stats.agentes}}</td>
-            </tr>
-            <tr>
-              <td>Online:</td>
-              <td>{{stats.online}}</td>
-            </tr>
-          </tbody>
-        </v-simple-table>
+      <v-col cols="12" md="6" v-for="(item, index) in stats.grupos" :key="index">
+        <v-toolbar>
+          <v-toolbar-title class="text-uppercase">{{index}}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn text>{{item}}</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
       </v-col>
     </v-row>
-    <v-toolbar dark src="/img/header-chart.jpg">
-      <h2>Estadistica Saldos</h2>
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <v-simple-table>
-      <tbody>
-        <tr v-for="(saldo, index) in stats.balance" :key="index">
-          <td class="text-uppercase">{{index}}</td>
-          <td>{{saldo | formatNumber}}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    <div v-if="manejaBalance">
+      <v-toolbar dark src="/img/header-chart.jpg">
+        <h2>Balance Saldos</h2>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+      <v-simple-table>
+        <tbody>
+          <tr v-for="(saldo, index) in stats.balance" :key="index">
+            <td class="text-uppercase">{{saldo.nombre}}</td>
+            <td class="text-uppercase">{{saldo.tiempo | formatDate}}</td>
+            <td>
+              {{saldo.saldo | formatNumber}}
+              <span class="text-uppercase">{{saldo.moneda}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+    </div>
   </div>
 </template>
 
@@ -74,10 +53,14 @@ export default {
     };
   },
   computed: {
-    ...mapState(["stats"])
+    ...mapState(["stats"]),
+    ...mapState("auth", ["usuario"])
   },
   methods: {
-    ...mapActions(["getStatus"])
+    ...mapActions(["getStatus"]),
+    manejaBalance() {
+      return this.usuario.rol == "master" || this.usuario.rol == "agente";
+    }
   },
   mounted() {
     this.getStatus();
