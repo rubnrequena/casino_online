@@ -1,26 +1,38 @@
-⏳ Sorteos: Prevenir registrar sorteos duplicados
 ⏳ Sorteos: Registrar sorteos automaticamente
 ⏳ AppBar: activar caja de busqueda
-⏳ /: mostrar estadisticas para usuarios no masters
+
 ⏳ /perfil: crear perfil usuario
 ⏳ /perfil: modificar contraseña
 ⏳ /perfil: modificar datos perfil
+
 ⏳ /operadora/operadoras: remover/editar operadora
 ⏳ /operadora/operadoras: mostrar horarios al hacer click sobre nombre
 ⏳ /operadora/operadoras: cambiar formato de fecha a d/m/y
+
 ⏳ /operaciones/monitoreo: mostrar sorteo abierto/cerrado
+
 ⏳ /usuarios/u: marcar favorito
 ⏳ /usuarios/nuevo: multi moneda
 ⏳ /usuarios/u/cupos: formulario para cupos ⭐
 ⏳ /usuarios/u/permisos: diseñar modulo permisos ⭐
 ⏳ /usuarios/u/seguridad: estilizar notificaciones
 ⏳ /usuarios/permisos: nombre de los permisos ⭐
+⏳ /usuarios/lista: mostrar otros masters y auditores
 /usuarios/cupos
 ⏳ alinear fecha con sorteo
 ⏳ prevenir topes duplicados
 ⏳ /reportes/general
 /reportes/usuarios:
 ⏳ reporte por moneda ⭐
+/sistema
+⏳ iniciar con otra sesion
+/informes
+⏳ informe de sucesos
+⏳ informe de errores
+/tickets
+⏳ administrador
+⏳ anular tickets
+⏳ simular premiacion
 
 *Usuarios
 rif, responsable, direccion, jugada minima ticket, jugada minima numero, monto maximo ventas
@@ -52,3 +64,8 @@ no muestra lista de monedas cuando hay saldos con multiples monedas
 ✅ /usuarios/cupos: mostrar cupos de usuario
 ✅ /saldo/historial: corregida seleccion de monedas disponibles
 ✅ /operaciones/monitoreo: configuracion del boton de auto actualizar
+
+23.09.19
+✅ Prevenir registrar sorteos duplicados
+✅ /: mostrar estadisticas para usuarios no masters
+

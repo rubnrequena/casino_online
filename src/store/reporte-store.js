@@ -14,5 +14,11 @@ export default {
     usuario_negativo(store, { usuario, desde, hasta, moneda }) {
       return reporteApi.negativos.usuarios(usuario, desde, hasta, moneda);
     },
+    loterias(store, { desde, hasta, moneda }) {
+      return reporteApi.loterias(desde, hasta, moneda);
+    },
+    sorteos(store, { desde, hasta, moneda, operadora }) {
+      return reporteApi.sorteos(operadora, desde, hasta, moneda);
+    },
   },
 };

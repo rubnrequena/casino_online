@@ -1,12 +1,8 @@
 <template>
   <div>
     <v-toolbar dark dense>
-      <btn-atras label="Reporte Usuarios"></btn-atras>
+      <btn-atras label="Sorteos"></btn-atras>
       <v-spacer></v-spacer>
-      <v-btn @click="relacion=!relacion" outlined>
-        <v-icon>mdi-percent</v-icon>Relacion
-      </v-btn>
-      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
     </v-toolbar>
     <v-row>
       <v-col>
@@ -23,6 +19,20 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <simple-list
+          text="Seleccione operadora"
+          v-model="operadora"
+          title="Operadoras"
+          :items="operadoras"
+          item-text="nombre"
+          item-value="_id"
+          maxWidth="400"
+          @change="onBuscar"
+        ></simple-list>
+      </v-col>
+    </v-row>
     <reporte :items="reporteData" :headers="headers"></reporte>
   </div>
 </template>
@@ -37,13 +47,12 @@ export default {
   },
   data() {
     return {
-      moneda: {},
-      relacion: false,
       desde: hoy,
       hasta: hoy,
       reporteData: [],
+      operadora: null,
       headers: [
-        { text: "USUARIO", value: "usuario", total: false },
+        { text: "SORTEO", value: "sorteo", total: false },
         { text: "VENTAS", value: "venta" },
         { text: "PREMIOS", value: "premio" },
         { text: "TICKETS", value: "tickets" },
@@ -51,41 +60,26 @@ export default {
         { text: "SUBTOTAL", value: "subtotal" },
         { text: "PARTICIPACION", value: "participacion" },
         { text: "TOTAL", value: "total" }
-      ],
-      totales: {}
+      ]
     };
   },
   computed: {
     ...mapState("auth", ["usuario"]),
-    headerTabla() {
-      return this.usuario.usuario == "conalot"
-        ? this.headersConalot
-        : this.headers;
-    },
-    esConalot() {
-      return this.usuario.usuario == "conalot";
-    }
+    ...mapState("operadora", ["operadoras"])
   },
   methods: {
     ...mapActions("reporte", {
-      get_reporte: "usuario"
+      get_reporte: "sorteos"
     }),
     onBuscar() {
-      this.buscarReporte();
-    },
-    buscarReporte(usuarioId) {
-      if (!usuarioId) usuarioId = this.usuario._id;
       this.get_reporte({
-        usuario: usuarioId,
+        operadora: this.operadora,
         desde: this.desde,
         hasta: this.hasta,
-        moneda: this.moneda.siglas
+        moneda: "ves"
       }).then(reportes => {
         this.reporteData = reportes;
       });
-    },
-    superaNumero(valor, porcentaje, color = "green", color2 = "red") {
-      return valor > porcentaje ? `${color} lighten-1` : `${color2} lighten-1`;
     }
   }
 };
@@ -93,6 +87,7 @@ export default {
 
 <style>
 .rpt-porcentaje {
+  color: grey;
   font-size: 80%;
 }
 </style>

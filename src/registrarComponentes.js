@@ -13,6 +13,9 @@ export function registrarFiltros() {
   Vue.filter("formatDate", function(value, format) {
     return moment(value).format(format || "YYYY-MM-DD");
   });
+  Vue.filter("isNumber", function(value) {
+    return typeof value == "number";
+  });
 }
 export function registrarComponentes() {
   Vue.use(Toasted);

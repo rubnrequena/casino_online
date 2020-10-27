@@ -47,4 +47,38 @@ export default {
       return postRequest("/operadora/numero/nuevo", { nombre, numeros });
     },
   },
+  paga: {
+    buscar() {
+      alert("obsoleto");
+      //return getRequest("/operadora/usuario/paga", { usuario });
+    },
+    nuevo(usuario, operadora, monto) {
+      alert("obsoleto");
+      return postRequest("/operadora/usuario/paga/nuevo", {
+        usuario,
+        operadora,
+        monto,
+      });
+    },
+  },
+  grupos: {
+    buscar: {
+      id(grupoId) {
+        return getRequest("/operadora/grupopago/id", { grupoId });
+      },
+      usuario(usuario) {
+        return getRequest("/operadora/grupopago/todos", { usuario });
+      },
+    },
+    nuevo(nombre, descripcion, usuario) {
+      return postRequest("/operadora/grupopago/nuevo", {
+        nombre,
+        descripcion,
+        usuario,
+      });
+    },
+    remover(grupoId, usuario) {
+      return postRequest("/operadora/grupopago/remover", { grupoId, usuario });
+    },
+  },
 };

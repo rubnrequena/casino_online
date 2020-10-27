@@ -16,52 +16,68 @@
     </v-app-bar>
     <v-container>
       Usuario Padre:
-      <usuario-buscar v-model="padre" @change="seleccionarMonedaPredeterminada"></usuario-buscar>
+      <usuario-buscar v-model="padre" @change="usuario_change"></usuario-buscar>
       <form id="nuevo-form" v-if="padre._id" @submit.prevent="onSubmit">
         <v-select v-model="rolHijo" v-if="padre.rol=='master'" label="Rol" :items="usuariosMaster"></v-select>
         <v-subheader>Cuenta</v-subheader>
-        <v-row>
+        <v-row dense>
           <v-col cols="12" md="6">
-            <v-text-field label="Usuario" v-model="usuario.usuario" required></v-text-field>
+            <v-text-field dense label="Usuario" v-model="usuario.usuario" required></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field :type="typeClave" label="Contraseña" v-model="usuario.clave" required></v-text-field>
+            <v-text-field
+              dense
+              :type="typeClave"
+              label="Contraseña"
+              v-model="usuario.clave"
+              required
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-subheader>Datos Personales</v-subheader>
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field label="Nombre" v-model="usuario.nombre" required></v-text-field>
+        <v-row dense>
+          <v-col cols="12" md="6">
+            <v-text-field dense label="Nombre" v-model="usuario.nombre" required></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field label="Correo" v-model="usuario.correo"></v-text-field>
+          <v-col cols="12" md="6">
+            <v-text-field dense label="Cedula" v-model="usuario.cedula"></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field label="Telefono" v-model="usuario.telefono"></v-text-field>
+          <v-col cols="12" md="6">
+            <v-text-field dense label="Correo" v-model="usuario.correo"></v-text-field>
           </v-col>
-          <v-col v-if="padre.rol=='agente'">
-            <v-text-field label="Cedula" v-model="usuario.cedula"></v-text-field>
-          </v-col>
-        </v-row>
-        <v-subheader v-if="padre.rol!='agente'">Comisiones</v-subheader>
-        <v-row v-if="padre.rol!='agente'">
-          <v-col cols="12" md="4">
-            <v-text-field type="number" label="Comision" v-model="usuario.comision"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field type="number" label="Participacion" v-model="usuario.participacion"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field type="number" label="Utilidad" v-model="usuario.utilidad"></v-text-field>
+          <v-col cols="12" md="6">
+            <v-text-field dense label="Telefono" v-model="usuario.telefono"></v-text-field>
           </v-col>
         </v-row>
+        <div v-if="tieneGrupoDePago">
+          <v-subheader>Grupo de Pago</v-subheader>
+          <v-select
+            v-model="usuario.grupoPago"
+            :items="gruposPago"
+            item-text="nombre"
+            item-value="_id"
+            label="Seleccione..."
+          ></v-select>
+        </div>
+        <!--<v-subheader v-if="padre.rol!='agente'">Comisiones</v-subheader>
+        <v-row dense v-if="padre.rol!='agente'">
+          <v-col cols="12" md="4">
+            <v-text-field dense type="number" label="Comision" v-model="usuario.comision"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field dense type="number" label="Participacion" v-model="usuario.participacion"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field dense type="number" label="Utilidad" v-model="usuario.utilidad"></v-text-field>
+          </v-col>
+        </v-row>-->
         <v-subheader>Geografía</v-subheader>
-        <v-row>
+        <v-row dense>
           <v-col cols="12" md="6">
-            <v-text-field label="Estado" v-model="usuario.estado"></v-text-field>
+            <v-text-field dense label="Estado" v-model="usuario.estado"></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field label="Ciudad" v-model="usuario.ciudad"></v-text-field>
+            <v-text-field dense label="Ciudad" v-model="usuario.ciudad"></v-text-field>
           </v-col>
         </v-row>
         <v-subheader v-if="padre.rol!='agente'">{{padre.rol}}</v-subheader>
@@ -79,7 +95,7 @@
         <v-subheader>Otros</v-subheader>
         <v-select
           v-model="usuario.moneda"
-          :multiple="!soportaMultimonedas"
+          :multiple="soportaMultimonedas"
           label="Moneda"
           :items="monedas"
           item-text="nombre"
@@ -113,7 +129,8 @@ export default {
         { text: "Comercial", value: "multi" },
         { text: "Master", value: "master" },
         { text: "Auditor", value: "auditor" }
-      ]
+      ],
+      gruposPago: []
     };
   },
   computed: {
@@ -124,13 +141,17 @@ export default {
       permisosUsuario: state => state.permisosUsuario
     }),
     soportaMultimonedas() {
-      return this.padre.rol == "agente" || this.padre.rol == "grupo";
+      return ["agente", "agencia"].indexOf(this.padre.rol) > -1 ? false : true;
+    },
+    tieneGrupoDePago() {
+      return ["agente", "grupo"].indexOf(this.padre.rol) > -1;
     }
   },
   methods: {
     ...mapActions("usuario", ["nuevo", "permisos_todos"]),
     ...mapActions("auth", ["tienePermiso", "permisos_lista"]),
     ...mapActions("saldo", ["getMonedas"]),
+    ...mapActions("operadora", ["grupo_usuario"]),
     onSubmit() {
       this.nuevo({
         ...this.usuario,
@@ -173,9 +194,19 @@ export default {
     seleccionarMonedaPredeterminada() {
       let m = this.monedas.find(m => m.principal == true);
       if (this.soportaMultimonedas) {
-        this.usuario.moneda = m.siglas;
-      } else {
         this.usuario.moneda = [m.siglas];
+      } else {
+        this.usuario.moneda = m.siglas;
+      }
+    },
+    usuario_change(usuario) {
+      this.seleccionarMonedaPredeterminada();
+      if (this.tieneGrupoDePago) {
+        this.grupo_usuario(usuario._id)
+          .then(grupos => {
+            this.gruposPago = grupos;
+          })
+          .catch(error => alert(error));
       }
     }
   },

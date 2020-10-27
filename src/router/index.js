@@ -8,6 +8,9 @@ import RecuperarClave from "../views/core/RecuperarClave.vue";
 
 import Operadoras from "../views/sistema/Operadoras.vue";
 import Operadora from "../views/sistema/Operadora.vue";
+//import Operadora_Paga from "../views/sistema/Operadora_Paga.vue";
+import GruposPago from "../views/sistema/GruposPago.vue";
+import GruposPago_info from "../views/sistema/GrupoPago_info.vue";
 import Sorteos from "../views/sistema/Sorteos.vue";
 import Operadora_Nueva from "../views/sistema/Operadora_Nueva.vue";
 import Operadora_Numeros from "../views/sistema/Numeros.vue";
@@ -39,6 +42,8 @@ import Cupos from "../views/cupos/Index.vue";
 import Reporte_Usuario from "../views/reportes/Usuarios.vue";
 import Reporte_Operadoras from "../views/reportes/Operadoras.vue";
 import Reporte_Negativos from "../views/reportes/Negativos.vue";
+import Reporte_Loterias from "../views/reportes/Loterias.vue";
+import Reporte_Sorteos from "../views/reportes/Sorteos.vue";
 
 //#endregion
 
@@ -75,6 +80,20 @@ const routes = [
               title: "Operadoras",
               permiso: "operadora1",
             },
+          },
+          {
+            path: "grupospago",
+            component: { render },
+            children: [
+              {
+                path: "/",
+                component: GruposPago,
+              },
+              {
+                path: ":id",
+                component: GruposPago_info,
+              },
+            ],
           },
           {
             path: "sorteos",
@@ -188,6 +207,8 @@ const routes = [
           { path: "usuarios", component: Reporte_Usuario },
           { path: "operadoras", component: Reporte_Operadoras },
           { path: "negativos", component: Reporte_Negativos },
+          { path: "loterias", component: Reporte_Loterias },
+          { path: "sorteos", component: Reporte_Sorteos },
         ],
       },
       {

@@ -1,12 +1,8 @@
 <template>
   <div>
     <v-toolbar dark dense>
-      <btn-atras label="Reporte Usuarios"></btn-atras>
+      <btn-atras label="Reporte Loterias"></btn-atras>
       <v-spacer></v-spacer>
-      <v-btn @click="relacion=!relacion" outlined>
-        <v-icon>mdi-percent</v-icon>Relacion
-      </v-btn>
-      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
     </v-toolbar>
     <v-row>
       <v-col>
@@ -23,6 +19,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    <reporte-totales :columnas="headerTotal" v-model="reporteData"></reporte-totales>
     <reporte :items="reporteData" :headers="headers"></reporte>
   </div>
 </template>
@@ -30,62 +27,47 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import { hoy } from "../../utils/date-util";
+import reporte_totales from "./reporte-totales";
 import Reporte from "./Reporte";
 export default {
   components: {
+    "reporte-totales": reporte_totales,
     reporte: Reporte
   },
   data() {
     return {
-      moneda: {},
-      relacion: false,
       desde: hoy,
       hasta: hoy,
       reporteData: [],
       headers: [
-        { text: "USUARIO", value: "usuario", total: false },
+        { text: "OPERADORA", value: "operadora", total: false },
         { text: "VENTAS", value: "venta" },
         { text: "PREMIOS", value: "premio" },
-        { text: "TICKETS", value: "tickets" },
-        { text: "COMISION", value: "comision" },
+        { text: "COMISION", value: "cm_banca" },
         { text: "SUBTOTAL", value: "subtotal" },
-        { text: "PARTICIPACION", value: "participacion" },
+        { text: "BANCAS", value: "pt_banca" },
+        { text: "OPERADORA", value: "pt_loteria" },
+        { text: "MASTER", value: "pt_master" },
+        { text: "COM. MASTER", value: "cm_master" },
         { text: "TOTAL", value: "total" }
-      ],
-      totales: {}
+      ]
     };
   },
   computed: {
-    ...mapState("auth", ["usuario"]),
-    headerTabla() {
-      return this.usuario.usuario == "conalot"
-        ? this.headersConalot
-        : this.headers;
-    },
-    esConalot() {
-      return this.usuario.usuario == "conalot";
-    }
+    ...mapState("auth", ["usuario"])
   },
   methods: {
     ...mapActions("reporte", {
-      get_reporte: "usuario"
+      get_reporte: "loterias"
     }),
     onBuscar() {
-      this.buscarReporte();
-    },
-    buscarReporte(usuarioId) {
-      if (!usuarioId) usuarioId = this.usuario._id;
       this.get_reporte({
-        usuario: usuarioId,
         desde: this.desde,
         hasta: this.hasta,
-        moneda: this.moneda.siglas
+        moneda: "ves"
       }).then(reportes => {
         this.reporteData = reportes;
       });
-    },
-    superaNumero(valor, porcentaje, color = "green", color2 = "red") {
-      return valor > porcentaje ? `${color} lighten-1` : `${color2} lighten-1`;
     }
   }
 };
@@ -93,6 +75,7 @@ export default {
 
 <style>
 .rpt-porcentaje {
+  color: grey;
   font-size: 80%;
 }
 </style>

@@ -7,6 +7,12 @@ module.exports = {
   operadoras(usuario, desde, hasta, moneda) {
     return getRequest("/reporte/operadoras", { usuario, desde, hasta, moneda });
   },
+  loterias(desde, hasta, moneda) {
+    return getRequest("/reporte/loterias", { desde, hasta, moneda });
+  },
+  sorteos(operadora, desde, hasta, moneda) {
+    return getRequest("/reporte/sorteos", { operadora, desde, hasta, moneda });
+  },
   negativos: {
     usuarios(usuario, desde, hasta, moneda) {
       return getRequest("/reporte/usuario/negativos", {

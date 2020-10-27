@@ -8,6 +8,7 @@ export default {
     operadoras: [],
     sorteos: [],
     numeros: [],
+    pagos: [],
   },
   mutations: {
     OPERADORAS(state, operadoras) {
@@ -22,6 +23,9 @@ export default {
     },
     NUMERO_NUEVO(state, numero) {
       state.numeros.push(numero);
+    },
+    OPERADORA_PAGA(state, pagos) {
+      state.pagos = pagos;
     },
   },
   actions: {
@@ -92,6 +96,26 @@ export default {
         commit("NUMERO_NUEVO", numero);
         return numero;
       });
+    },
+
+    usuario_paga({ commit }, usuario) {
+      return operadoraApi.paga.buscar(usuario).then((pagos) => {
+        commit("OPERADORA_PAGA", pagos);
+        return pagos;
+      });
+    },
+
+    grupo_id(store, grupoId) {
+      return operadoraApi.grupos.buscar.id(grupoId);
+    },
+    grupo_usuario(store, usuario) {
+      return operadoraApi.grupos.buscar.usuario(usuario);
+    },
+    grupo_nuevo(store, { nombre, descripcion, usuario }) {
+      return operadoraApi.grupos.nuevo(nombre, descripcion, usuario);
+    },
+    grupo_remover(store, { grupoId, usuario }) {
+      return operadoraApi.grupos.remover(grupoId, usuario);
     },
   },
 };

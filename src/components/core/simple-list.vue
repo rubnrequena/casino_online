@@ -1,8 +1,8 @@
 <template>
   <div>
-    <slot :value="value" :click="abrir">
+    <slot :value="value" :text="texto" :click="abrir">
       <v-btn text block outlined @click="abrir">
-        <span>{{value}}</span>
+        <span>{{texto}}</span>
       </v-btn>
     </slot>
     <v-dialog :max-width="maxWidth" v-model="dialog">
@@ -31,7 +31,13 @@ export default {
       default: 400
     },
     title: String,
-    value: Object,
+    text: {
+      type: String,
+      default: "Esperando seleccion..."
+    },
+    value: {
+      type: String
+    },
     items: Array,
     "item-text": {
       type: String,
@@ -44,7 +50,8 @@ export default {
   },
   data() {
     return {
-      dialog: false
+      dialog: false,
+      texto: this.text
     };
   },
   methods: {
@@ -56,6 +63,8 @@ export default {
     },
     select(item) {
       let value = this.itemValue ? item[this.itemValue] : item;
+      this.texto = this.itemValue ? item[this.itemText] : item;
+
       this.$emit("input", value);
       this.$emit("change", value);
       this.dialog = false;

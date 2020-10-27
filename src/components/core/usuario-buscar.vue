@@ -19,16 +19,31 @@
           </v-btn>
         </v-app-bar>
         <v-container>
+          <v-bottom-navigation absolute>
+            <v-btn text @click="tipoBusq='texto'">BUSCAR</v-btn>
+            <v-btn text @click="tipoBusq='rol'">ROLES</v-btn>
+          </v-bottom-navigation>
           <v-text-field
+            v-if="tipoBusq=='texto'"
             clearable
             autofocus
             label="Buscar"
             v-model="busqueda"
             @click:clear="busqueda=''"
           ></v-text-field>
+          <v-row v-else>
+            <v-col v-for="rol in roles" :key="rol">
+              <v-btn block small>{{rol }}</v-btn>
+            </v-col>
+          </v-row>
         </v-container>
         <v-card-text>
-          <v-data-table :items="usuarios" :headers="headers" @click:row="onClick">
+          <v-data-table
+            :items="usuarios"
+            :headers="headers"
+            @click:row="onClick"
+            mobile-breakpoint="0"
+          >
             <template v-slot:item.rol="{item}">
               <span class="text-uppercase">{{item.rol}}</span>
             </template>
@@ -51,6 +66,7 @@ export default {
   data() {
     return {
       dialog: false,
+      tipoBusq: "texto",
       padre: { nombre: "Seleccione Usuario" },
       patronCodigo: /[\d{1,}-]+/g,
       busqueda: "",
@@ -59,6 +75,16 @@ export default {
         { text: "NOMBRE", value: "nombre" },
         { text: "USUARIO", value: "usuario" },
         { text: "ROL", value: "rol" }
+      ],
+      roles: [
+        "master",
+        "agente",
+        "online",
+        "comercial",
+        "banca",
+        "grupo",
+        "agencia",
+        "pos"
       ]
     };
   },
