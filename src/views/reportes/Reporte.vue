@@ -33,20 +33,56 @@
       <b>({{(item.cm_banca*100/item.venta)|formatNumber("0.00")}}%)</b>
     </template>
     <template v-slot:item.pt_banca="{item}">
-      <span :class="esNegativo(item.pt_banca)">{{item.pt_banca|formatNumber}}</span>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on, attrs}">
+          <span
+            v-on="on"
+            v-bind="attrs"
+            :class="esNegativo(item.pt_banca)"
+          >{{item.pt_banca|formatNumber}}</span>
+        </template>
+        <span>{{item.pt_banca*100/item.subtotal|formatNumber("0.00")}}%</span>
+      </v-tooltip>
     </template>
 
     <template v-slot:item.master="{item}">
       <span :class="esNegativo(item.master)">{{item.master|formatNumber}}</span>
     </template>
     <template v-slot:item.cm_master="{item}">
-      <span :class="esNegativo(item.cm_master)">{{item.cm_master|formatNumber}}</span>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on, attrs}">
+          <span
+            v-on="on"
+            v-bind="attrs"
+            :class="esNegativo(item.cm_master)"
+          >{{item.cm_master|formatNumber}}</span>
+        </template>
+        <span>{{item.cm_master*100/item.venta|formatNumber("0.00")}}%</span>
+      </v-tooltip>
     </template>
     <template v-slot:item.pt_master="{item}">
-      <span :class="esNegativo(item.pt_master)">{{item.pt_master|formatNumber}}</span>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on, attrs}">
+          <span
+            v-on="on"
+            v-bind="attrs"
+            :class="esNegativo(item.pt_master)"
+          >{{item.pt_master|formatNumber}}</span>
+        </template>
+        <span>{{item.pt_master*100/item.subtotal|formatNumber("0.00")}}%</span>
+      </v-tooltip>
     </template>
     <template v-slot:item.pt_loteria="{item}">
-      <span :class="esNegativo(item.pt_loteria)">{{item.pt_loteria|formatNumber}}</span>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on, attrs}">
+          <span
+            v-on="on"
+            v-bind="attrs"
+            :class="esNegativo(item.pt_loteria)"
+          >{{item.pt_loteria|formatNumber}}</span>
+        </template>
+        <span>{{item.pt_loteria*100/item.subtotal|formatNumber("0.00")}}%</span>
+      </v-tooltip>
     </template>
 
     <template v-slot:body.append="{ headers  }">
