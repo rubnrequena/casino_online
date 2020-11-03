@@ -14,12 +14,12 @@
         <date-picker2 v-model="hasta"></date-picker2>
       </v-col>
       <v-col>
-        <v-btn style="margin-top:15px;" @click="onBuscar" large dark block color="teal">
+        <v-btn style="margin-top:15px;" @click="buscarReporte" large dark block color="teal">
           <v-icon>mdi-magnify</v-icon>Buscar
         </v-btn>
       </v-col>
     </v-row>
-    <reporte :items="reporteData" :headers="headers"></reporte>
+    <reporte @select="reporte_select" :items="reporteData" :headers="headers"></reporte>
   </div>
 </template>
 
@@ -33,6 +33,7 @@ export default {
   },
   data() {
     return {
+      usuarioID: null,
       desde: hoy,
       hasta: hoy,
       reporteData: [],
@@ -55,15 +56,29 @@ export default {
     ...mapActions("reporte", {
       get_reporte: "usuario_negativo"
     }),
-    onBuscar() {
+    buscarReporte() {
       this.get_reporte({
-        usuario: this.usuario._id,
+        usuario: this.usuarioID,
         desde: this.desde,
         hasta: this.hasta,
         moneda: "ves"
       }).then(reportes => {
         this.reporteData = reportes;
       });
+    },
+    reporte_select(usuario) {
+      this.$router.push("/reportes/negativos/" + usuario._id);
+    }
+  },
+  mounted() {
+    this.usuarioID = this.usuario._id;
+    this.buscarReporte();
+  },
+  watch: {
+    $route(to) {
+      const id = to.path.split("/").pop();
+      this.usuarioID = id;
+      this.buscarReporte();
     }
   }
 };

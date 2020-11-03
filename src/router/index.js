@@ -205,10 +205,14 @@ const routes = [
         component: { render },
         children: [
           { path: "usuarios", component: Reporte_Usuario },
+          { path: "usuarios/:id", component: Reporte_Usuario },
           { path: "operadoras", component: Reporte_Operadoras },
+          { path: "operadoras/:id", component: Reporte_Operadoras },
           { path: "negativos", component: Reporte_Negativos },
+          { path: "negativos/:id", component: Reporte_Negativos },
           { path: "loterias", component: Reporte_Loterias },
           { path: "sorteos", component: Reporte_Sorteos },
+          { path: "sorteos/:id", component: Reporte_Sorteos },
         ],
       },
       {

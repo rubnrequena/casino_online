@@ -11,7 +11,7 @@
       <v-btn outlined @click="registrarEnlace" :disabled="!formurlarioValido">Registrar</v-btn>
     </v-app-bar>
     <v-container>
-      <usuario-buscar @change="buscarEnlaces" v-model="usuario"></usuario-buscar>
+      <usuario-buscar @change="buscarEnlaces" v-model="usuarioActivo"></usuario-buscar>
       <v-form>
         <v-autocomplete
           multiple
@@ -25,17 +25,22 @@
     </v-container>
     <v-data-table :items="enlaces" :headers="headers">
       <template v-slot:item.operadora="{item}">
-        <v-btn text @click="removerEnlace(item)">
+        <v-btn :disabled="item.usuario!=usuarioActivo._id" text @click="removerEnlace(item)">
           <v-icon color="red">mdi-delete-outline</v-icon>
-          {{item.operadora.nombre}}
         </v-btn>
+        {{item.operadora}}
       </template>
       <template v-slot:item.creado="{item}">{{item.creado | formatDate}}</template>
       <template v-slot:item.mostrar="{item}">
-        <v-btn icon v-if="item.mostrar" @click="desactivarEnlace(item)">
+        <v-btn
+          :disabled="item.usuario!=usuarioActivo._id"
+          icon
+          v-if="item.mostrar"
+          @click="desactivarEnlace(item)"
+        >
           <v-icon color="success">mdi-checkbox-marked-circle-outline</v-icon>
         </v-btn>
-        <v-btn icon v-else @click="activarEnlace(item)">
+        <v-btn :disabled="item.usuario!=usuarioActivo._id" icon v-else @click="activarEnlace(item)">
           <v-icon>mdi-close-circle-outline</v-icon>
         </v-btn>
       </template>
@@ -53,7 +58,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      usuario: {},
+      usuarioActivo: {},
       operadora: [],
       buscarDialog: false,
       headers: [
@@ -67,9 +72,10 @@ export default {
     };
   },
   computed: {
+    ...mapState("auth", ["usuario"]),
     ...mapState("operadora", ["operadoras"]),
     formurlarioValido() {
-      return this.usuario._id && this.operadora.length > 0;
+      return this.usuarioActivo._id && this.operadora.length > 0;
     }
   },
   methods: {
@@ -82,12 +88,12 @@ export default {
     },
     registrarEnlace() {
       this.enlace({
-        usuario: this.usuario._id,
+        usuario: this.usuarioActivo._id,
         operadora: this.operadora,
         mostrar: true
       })
         .then(() => {
-          this.buscarEnlaces(this.usuario);
+          this.buscarEnlaces(this.usuarioActivo);
           this.$toasted.success("Enlace registrado con exito", {
             duration: 3000
           });
@@ -104,10 +110,10 @@ export default {
     },
     removerConfirmado() {
       this.enlace_remover({
-        usuario: this.usuario._id,
-        enlace: this.enlaceRemover._id
+        usuario: this.usuarioActivo._id,
+        enlace: this.enlaceRemover.enlace
       })
-        .then(() => this.buscarEnlaces(this.usuario))
+        .then(() => this.buscarEnlaces(this.usuarioActivo))
         .catch(error => {
           this.$toasted.error(error, {
             duration: 3000
@@ -117,15 +123,15 @@ export default {
 
     activarEnlace(enlace) {
       this.activar_enlace({
-        usuario: this.usuario._id,
-        enlace: enlace._id,
+        usuario: this.usuarioActivo._id,
+        enlace: enlace.enlace,
         activo: true
       }).then(() => (enlace.mostrar = true));
     },
     desactivarEnlace(enlace) {
       this.activar_enlace({
-        usuario: this.usuario._id,
-        enlace: enlace._id,
+        usuario: this.usuarioActivo._id,
+        enlace: enlace.enlace,
         activo: false
       }).then(() => (enlace.mostrar = false));
     }

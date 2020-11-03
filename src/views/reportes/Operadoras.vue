@@ -37,6 +37,7 @@ export default {
   },
   data() {
     return {
+      operadoraReporte: null,
       moneda: {},
       relacion: false,
       desde: hoy,
@@ -86,6 +87,15 @@ export default {
     },
     superaNumero(valor, porcentaje, color = "green", color2 = "red") {
       return valor > porcentaje ? `${color} lighten-1` : `${color2} lighten-1`;
+    }
+  },
+  mounted() {
+    this.buscarReporte(this.$route.params.id || this.usuario._id);
+  },
+  watch: {
+    $route(to) {
+      const id = to.path.split("/").pop();
+      this.buscarReporte(id);
     }
   }
 };

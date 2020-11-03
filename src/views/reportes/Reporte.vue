@@ -1,7 +1,15 @@
 <template>
-  <v-data-table :items="items" :headers="headers" dense>
+  <v-data-table mobile-breakpoint="0" :items="items" :headers="headers" dense>
     <template v-slot:item.usuario="{item}">
-      <v-btn text>{{item.usuario.codigo.split("-").pop()}} - {{item.usuario.nombre}}</v-btn>
+      <v-btn
+        v-if="item.usuario.rol=='taquilla'"
+        text
+      >{{item.usuario.codigo.split("-").pop()}} - {{item.usuario.nombre}}</v-btn>
+      <v-btn
+        v-else
+        @click="buscarReporte(item.usuario)"
+        text
+      >{{item.usuario.codigo.split("-").pop()}} - {{item.usuario.nombre}}</v-btn>
     </template>
     <template v-slot:item.operadora="{item}">
       <v-btn text>{{item.operadora.nombre}}</v-btn>
@@ -138,6 +146,9 @@ export default {
     },
     esNegativo(value) {
       return value < 0 ? "negativo" : "positivo";
+    },
+    buscarReporte(usuario) {
+      this.$emit("select", usuario);
     }
   }
 };

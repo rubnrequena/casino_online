@@ -8,8 +8,8 @@
   >
     <template v-slot:default="{click}">
       <v-btn block outlined text @click="click">
-        <v-icon left>mdi-calendar-search</v-icon>
-        Moneda: {{value.nombre}} ({{value.siglas}})
+        <v-icon left>mdi-home-currency-usd</v-icon>
+        {{value.nombre}} ({{value.siglas}})
       </v-btn>
     </template>
   </simple-list>
