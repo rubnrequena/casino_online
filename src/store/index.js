@@ -10,6 +10,7 @@ import usuario from "./usuario-store";
 import saldo from "./saldo-store";
 import ticket from "./ticket-store";
 import reporte from "./reporte-store";
+import sistema from "./sistema-store";
 
 import { regexec } from "../utils/regx-util";
 import sistemaApi from "../api/sistema-api";
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     saldo,
     ticket,
     reporte,
+    sistema,
   },
   state: {
     menu: true,

@@ -33,6 +33,8 @@ import Usuario_Cupos from "../views/usuarios/usuario/Cupos.vue";
 import Usuario_Permisos from "../views/usuarios/usuario/Permisos.vue";
 import Usuario_Hijos from "../views/usuarios/usuario/Hijos.vue";
 import Usuario_Seguridad from "../views/usuarios/usuario/Seguridad.vue";
+import Menu from "../views/interfaz/menus/MenuIndex.vue";
+import MenuNuevo from "../views/interfaz/menus/Nuevo.vue";
 
 import Permiso_Index from "../views/permisos/Index.vue";
 import NoAutorizado from "../views/NoAutorizado.vue";
@@ -159,6 +161,21 @@ const routes = [
             path: "nuevo",
             component: Usuario_Nuevo,
             meta: { permiso: "usuario2" },
+          },
+          {
+            path: "menu",
+            component: { render },
+            meta: { permiso: "usuario2" },
+            children: [
+              {
+                path: "/",
+                component: Menu,
+              },
+              {
+                path: "nuevo",
+                component: MenuNuevo,
+              },
+            ],
           },
           {
             path: "u/:usuario",
