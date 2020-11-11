@@ -59,18 +59,6 @@
             label="Seleccione..."
           ></v-select>
         </div>
-        <!--<v-subheader v-if="padre.rol!='agente'">Comisiones</v-subheader>
-        <v-row dense v-if="padre.rol!='agente'">
-          <v-col cols="12" md="4">
-            <v-text-field dense type="number" label="Comision" v-model="usuario.comision"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field dense type="number" label="Participacion" v-model="usuario.participacion"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field dense type="number" label="Utilidad" v-model="usuario.utilidad"></v-text-field>
-          </v-col>
-        </v-row>-->
         <v-subheader>Geografía</v-subheader>
         <v-row dense>
           <v-col cols="12" md="6">
@@ -80,19 +68,15 @@
             <v-text-field dense label="Ciudad" v-model="usuario.ciudad"></v-text-field>
           </v-col>
         </v-row>
-        <v-subheader v-if="padre.rol!='agente'">{{padre.rol}}</v-subheader>
+        <v-subheader>Otros</v-subheader>
         <v-autocomplete
-          class="colorHint"
-          hint="El permiso predeterminado heredará todos los privilegios del padre"
           persistent-hint
-          v-if="padre.rol!='agente'"
           label="Permisos"
-          :items="listaPermisos"
+          :items="this.permisosUsuario"
           item-text="nombre"
           item-value="_id"
           v-model="usuario.permisos"
         ></v-autocomplete>
-        <v-subheader>Otros</v-subheader>
         <v-select
           v-model="usuario.moneda"
           :multiple="soportaMultimonedas"
@@ -123,7 +107,6 @@ export default {
         utilidad: 0,
         moneda: []
       },
-      listaPermisos: [],
       usuariosMaster: [
         { text: "Agente", value: "agente" },
         { text: "Comercial", value: "multi" },
@@ -164,7 +147,7 @@ export default {
             participacion: 0,
             utilidad: 0,
             moneda: this.monedas.find(m => m.principal == true).siglas,
-            permisos: this.listaPermisos[0]._id
+            permisos: this.permisosUsuario.find(this.permisoPredeterminado)
           };
           this.$toasted.success("Usuario creado exitosamente", {
             duration: 3000,
@@ -208,13 +191,16 @@ export default {
           })
           .catch(error => alert(error));
       }
+    },
+    permisoPredeterminado(p) {
+      return p.predeterminado === true;
     }
   },
   mounted() {
     this.getMonedas().then(this.seleccionarMonedaPredeterminada);
-    this.permisos_lista().then(() => {
-      this.listaPermisos = [this.permisos, ...this.permisosUsuario];
-      this.usuario.permisos = this.listaPermisos[0]._id;
+    this.permisos_lista().then(permisos => {
+      const permiso = permisos.find(this.permisoPredeterminado);
+      this.usuario.permisos = permiso ? permiso._id : null;
     });
   }
 };

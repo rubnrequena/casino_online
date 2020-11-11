@@ -30,7 +30,10 @@ module.exports = {
       });
     },
     usuario() {
-      return getRequest("/auth/permiso/usuario");
+      return getRequest("/usuario/permiso/todos");
+    },
+    prefefinir(permisoId) {
+      return postRequest("/usuario/permiso/predefinir", { permisoId });
     },
   },
 };

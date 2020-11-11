@@ -7,11 +7,6 @@ export default {
     usuario: null,
     token: "",
     redireccionPendiente: null,
-    permisosDescripcion: {
-      vnt: "Ventas",
-      vnt1: "Leer",
-      vnt2: "Crear",
-    },
     permisosCache: false,
     permisosUsuario: [],
   },
@@ -23,7 +18,6 @@ export default {
   mutations: {
     USUARIO(state, usuario) {
       state.usuario = usuario;
-      state.usuario.permisos.nombre = "predeterminado";
       state.token = usuario.token;
     },
     CIERRA_SESSION(state) {
@@ -50,7 +44,7 @@ export default {
     },
     tienePermiso({ state }, permiso) {
       return new Promise((resolve) => {
-        const permisoExiste = state.usuario.permisos.permisos.indexOf(permiso);
+        const permisoExiste = state.usuario.permisos.indexOf(permiso);
         resolve(permisoExiste > -1);
       });
     },
@@ -68,11 +62,19 @@ export default {
         });
     },
     permisos_lista({ state, commit }) {
-      if (state.permisosCache) return state.permisosLista;
-      return authApi.permisos.usuario().then((permisos) => {
-        commit("PERMISOS_LISTA", permisos);
-        return permisos;
+      return new Promise((resolve, reject) => {
+        if (state.permisosCache) resolve(state.permisosLista);
+        return authApi.permisos
+          .usuario()
+          .then((permisos) => {
+            commit("PERMISOS_LISTA", permisos);
+            resolve(permisos);
+          })
+          .catch((error) => reject(error));
       });
+    },
+    permiso_predefinir(store, permisoId) {
+      return authApi.permisos.prefefinir(permisoId);
     },
     recuperar(store, correo) {
       return authApi.recuperar(correo);

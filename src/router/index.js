@@ -36,7 +36,7 @@ import Usuario_Seguridad from "../views/usuarios/usuario/Seguridad.vue";
 import Menu from "../views/interfaz/menus/MenuIndex.vue";
 import MenuNuevo from "../views/interfaz/menus/Nuevo.vue";
 
-import Permiso_Index from "../views/permisos/Index.vue";
+import Permiso_Index from "../views/permisos/PermisoIndex.vue";
 import NoAutorizado from "../views/NoAutorizado.vue";
 import Cupos from "../views/cupos/Index.vue";
 
@@ -49,6 +49,16 @@ import Reporte_Sorteos from "../views/reportes/Sorteos.vue";
 
 //#endregion
 
+import store from "../store/index";
+import {
+  operadora,
+  sorteos,
+  usuarios,
+  saldos,
+  cupos,
+  permisos,
+  ventas,
+} from "../dto/permiso-dto";
 Vue.use(VueRouter);
 
 const routes = [
@@ -73,14 +83,14 @@ const routes = [
               {
                 path: "nueva",
                 component: Operadora_Nueva,
-                meta: { permiso: "operadora2" },
+                meta: { permiso: operadora.modificar },
               },
               { path: "numeros", component: Operadora_Numeros },
               { path: "operadora/:operadora", component: Operadora },
             ],
             meta: {
               title: "Operadoras",
-              permiso: "operadora1",
+              permiso: operadora.leer,
             },
           },
           {
@@ -100,12 +110,12 @@ const routes = [
           {
             path: "sorteos",
             component: Sorteos,
-            meta: { permiso: "sorteos1" },
+            meta: { permiso: sorteos.leer },
           },
           {
             path: "premiar",
             component: Premiar,
-            meta: { permiso: "sorteos_prm" },
+            meta: { permiso: sorteos.premia },
           },
           {
             path: "enlaces/:usuario?",
@@ -116,6 +126,7 @@ const routes = [
       {
         path: "/saldo",
         component: { render },
+        meta: { permiso: saldos.leer },
         children: [
           {
             path: "historial",
@@ -144,6 +155,9 @@ const routes = [
         path: "/operaciones",
         component: { render },
         children: [{ path: "monitoreo", component: Monitoreo }],
+        meta: {
+          permiso: ventas.leer,
+        },
       },
       {
         path: "/usuarios",
@@ -160,12 +174,11 @@ const routes = [
           {
             path: "nuevo",
             component: Usuario_Nuevo,
-            meta: { permiso: "usuario2" },
+            meta: { permiso: usuarios.modificar },
           },
           {
             path: "menu",
             component: { render },
-            meta: { permiso: "usuario2" },
             children: [
               {
                 path: "/",
@@ -194,7 +207,7 @@ const routes = [
               {
                 path: "usuarios",
                 component: Usuario_Hijos,
-                meta: { permiso: "usuario1" },
+                meta: { permiso: usuarios.leer },
               },
               {
                 path: "seguridad",
@@ -205,17 +218,20 @@ const routes = [
           {
             path: "permisos",
             component: Permiso_Index,
-            meta: { permiso: "permisos1" },
+            meta: { permiso: permisos.leer },
           },
         ],
         meta: {
-          permiso: "usuario1",
+          permiso: usuarios.leer,
         },
       },
       {
         path: "/cupos",
         component: { render },
         children: [{ path: "/", component: Cupos }],
+        meta: {
+          permiso: cupos.leer,
+        },
       },
       {
         path: "/reportes",
@@ -262,7 +278,6 @@ function render(h) {
   return h("router-view");
 }
 
-import store from "../store/index";
 router.beforeEach(async (to, from, next) => {
   const metaAuth = to.matched
     .slice()

@@ -7,4 +7,7 @@ module.exports = {
   menus() {
     return getRequest("/sistema/menus");
   },
+  permisos() {
+    return getRequest("/sistema/permisos");
+  },
 };
