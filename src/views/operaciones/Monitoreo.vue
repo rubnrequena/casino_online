@@ -198,6 +198,7 @@ export default {
       });
 
       let interval = this.tiemposNum[this.tiempoActualizacion];
+      if (interval > 0)
       this.tiemposInterval = setTimeout(() => {
         this.buscarVentas();
       }, interval);
