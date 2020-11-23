@@ -9,7 +9,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outlined @click="cambiarTiempoActualizacion">
-        <v-icon>mdi-refresh</v-icon>
+        <v-icon>{{iconoRefresco}}</v-icon>
         {{tiemposLabel[tiempoActualizacion]}}
       </v-btn>
     </v-app-bar>
@@ -28,14 +28,17 @@
         <v-col>
           <moneda-picker v-model="moneda" @change="buscarVentas"></moneda-picker>
         </v-col>
-        <!-- <v-col>
-          <v-spacer></v-spacer>
-          <v-btn text block outlined>
-            Moneda:
-            <span class="text-uppercase">{{moneda.nombre}} ({{moneda.siglas}})</span>
-          </v-btn>
-        </v-col>-->
       </v-row>
+      <v-btn
+        block
+        dark
+        @click="cambiarStatus"
+        :color="estatusSorteo?'green':'#990000'"
+        title="Click parar cerrar/abrir sorteo"
+      >
+        <v-icon>{{estatusSorteo?"mdi-lock-open":"mdi-lock"}}</v-icon>
+        {{estatusSorteo?"ABIERTO":"CERRADO"}}
+      </v-btn>
     </v-container>
     <v-tabs v-model="tab" background-color="deep-purple accent-4" class="elevation-2" dark>
       <v-tabs-slider></v-tabs-slider>
@@ -113,6 +116,7 @@ export default {
   },
   data() {
     return {
+      iconoRefresco: "mdi-refresh",
       porcentaje: "0.0",
       ticketsDialog: false,
       tab: null,
@@ -143,7 +147,7 @@ export default {
       totalJugado: 0,
       totalJugadas: 0,
 
-      tiempoActualizacion: 1,
+      tiempoActualizacion: 0,
       tiemposLabel: ["M", "5S", "10S", "30S"],
       tiemposNum: [0, 5000, 10000, 30000],
       tiemposInterval: 0,
@@ -157,7 +161,16 @@ export default {
   computed: {
     ...mapState("auth", {
       monedas: state => state.usuario.moneda
-    })
+    }),
+    estatusSorteo() {
+      console.log(this.sorteo);
+      const ahora = new Date();
+      const cierre = new Date(this.sorteo.cierra);
+      if (!this.sorteo) return false;
+      if (ahora < cierre) {
+        return this.sorteo.abierta;
+      } else return false;
+    }
   },
   methods: {
     ...mapActions("ticket", [
@@ -165,13 +178,39 @@ export default {
       "monitor_numero",
       "admin_tickets"
     ]),
+    ...mapActions("operadora", ["abrirSorteo", "cerrarSorteo"]),
+    cambiarStatus() {
+      if (!this.sorteo) return;
+      if (this.estatusSorteo)
+        this.cerrarSorteo(this.sorteo._id)
+          .then(() => {
+            this.sorteo = { ...this.sorteo, abierta: false };
+          })
+          .catch(error => {
+            this.$toasted.error(error, {
+              duration: 3000
+            });
+          });
+      else
+        this.abrirSorteo(this.sorteo._id)
+          .then(() => {
+            this.sorteo = { ...this.sorteo, abierta: true };
+          })
+          .catch(error => {
+            this.$toasted.error(error, {
+              duration: 3000
+            });
+          });
+    },
     buscarVentas() {
       clearTimeout(this.tiemposInterval);
+      this.iconoRefresco = "mdi-update";
       this.monitor_admin({
         sorteo: this.sorteo._id,
         rol: this.rol,
         moneda: this.moneda.siglas
       }).then(monitor => {
+        this.iconoRefresco = "mdi-refresh";
         this.totalJugado = monitor.reduce((prev, venta) => {
           return prev + venta.jugado;
         }, 0);
@@ -197,11 +236,7 @@ export default {
         this.numeros = numeros;
       });
 
-      let interval = this.tiemposNum[this.tiempoActualizacion];
-      if (interval > 0)
-      this.tiemposInterval = setTimeout(() => {
-        this.buscarVentas();
-      }, interval);
+      this.iniciarCronometro();
     },
     rol_change() {
       this.buscarVentas();
@@ -215,14 +250,24 @@ export default {
         usuario: usuario._id
       }).then(tickets => (this.ticketsUsuario = tickets));
     },
-    cambiarTiempoActualizacion() {
-      let t = this.tiempoActualizacion + 1;
-      if (t < this.tiemposNum.length) {
-        this.tiempoActualizacion = t;
+    iniciarCronometro() {
+      if (!this.sorteo) return;
+      let interval = this.tiemposNum[this.tiempoActualizacion];
+      if (interval > 0) {
+        this.tiemposInterval = setTimeout(() => {
+          this.buscarVentas();
+        }, interval);
       } else {
         this.tiempoActualizacion = 0;
         clearTimeout(this.tiemposInterval);
+        this.tiemposInterval = 0;
       }
+    },
+    cambiarTiempoActualizacion() {
+      this.tiempoActualizacion++;
+      if (this.tiempoActualizacion > this.tiemposNum.length)
+        this.tiempoActualizacion = 0;
+      this.iniciarCronometro();
     }
   },
   mounted() {
