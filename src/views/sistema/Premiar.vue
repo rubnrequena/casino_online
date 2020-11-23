@@ -26,14 +26,7 @@
 
     <v-data-table :items="sorteos" :headers="headers">
       <template v-slot:item.numero="{item}">
-        <v-autocomplete
-          :items="numerosSearch"
-          :item-text="numeroText"
-          item-value="numero"
-          v-model="numeroSorteos[item._id]"
-          @change="confirmarPremio($event,item)"
-        ></v-autocomplete>
-        <!-- <p class="text-center" v-else>SORTEO ABIERTO</p> -->
+        <v-text-field :value="item.numero"></v-text-field>
       </template>
     </v-data-table>
     <sino
