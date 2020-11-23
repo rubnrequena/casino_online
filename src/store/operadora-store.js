@@ -29,7 +29,7 @@ export default {
     },
   },
   actions: {
-    leer() {},
+    leer() { },
     nueva(store, { nombre, paga, tipo, sorteos, numeros }) {
       return operadoraApi
         .nueva(nombre, paga, tipo, sorteos, numeros)
@@ -37,6 +37,12 @@ export default {
           store.commit("NUEVA_OPERADORA", operadora);
           return operadora;
         });
+    },
+    remover(store, operadoraId) {
+      return operadoraApi.remover(operadoraId)
+    },
+    editar(store, operadora) {
+      return operadoraApi.editar(operadora)
     },
     enlace(store, { usuario, operadora, mostrar }) {
       return operadoraApi.enlace(usuario, operadora, mostrar);
@@ -55,7 +61,13 @@ export default {
     },
 
     buscarId({ state }, operadoraId) {
-      return state.operadoras.find((operadora) => operadora._id == operadoraId);
+      return new Promise((resolve, reject) => {
+        let operadora = state.operadoras.find((operadora) => operadora._id == operadoraId);
+        if (operadora) resolve(operadora)
+        else operadoraApi.buscar.id(operadoraId).then(operadora => {
+          resolve(operadora)
+        }).catch(error => reject(error))
+      });
     },
 
     registrarSorteo(store, { desde, hasta, operadora }) {

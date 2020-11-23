@@ -1,3 +1,26 @@
+#buscador de usuarios
+- buscar los usuarios a demanda, no precargar todos los usuarios
+- buscar usuarios por rol (solo roles inferiores)
+- ir haciendo cache de las busquedas
+- reinicar campo de busqueda al elegir usuario
+
+/operadora/premiar
+- activar la premiacion escribiendo los numeros
+- falta boton para reiniciar sorteo
+
+/usuarios/lista/:usuario
+- bloquear boton de url en el ultimo nivel (pos,online)
+
+/usuarios/menu
+- desactivar del menu
+
+/cupos
+- reparar los select al abrir modal de registro (no funcionan)
+- reiniciar monto al elegir tope
+
+/informes
+- mostrar informes (sesiones, actividad, etc)
+
 ⏳ Sorteos: Registrar sorteos automaticamente
 ⏳ AppBar: activar caja de busqueda
 
@@ -9,10 +32,10 @@
 ⏳ /operadora/operadoras: mostrar horarios al hacer click sobre nombre
 ⏳ /operadora/operadoras: cambiar formato de fecha a d/m/y
 
-⏳ /operaciones/monitoreo: mostrar sorteo abierto/cerrado
+✅ /operaciones/monitoreo: mostrar sorteo abierto/cerrado
 
 ⏳ /usuarios/u: marcar favorito
-⏳ /usuarios/nuevo: multi moneda
+✅ /usuarios/nuevo: multi moneda
 ⏳ /usuarios/u/cupos: formulario para cupos ⭐
 ⏳ /usuarios/u/permisos: diseñar modulo permisos ⭐
 ⏳ /usuarios/u/seguridad: estilizar notificaciones
@@ -39,33 +62,4 @@ rif, responsable, direccion, jugada minima ticket, jugada minima numero, monto m
 
 /saldo/historial
 no muestra lista de monedas cuando hay saldos con multiples monedas
-
-20.09.18
-✅ /login: recuperar contraseña
-✅ /login: estilizar mensaje de notificacion
-✅ /operadora/enlaces: registrar multiples enlaces de una vez
-✅ /operadora/enlaces: preguntar antes de remover enlace
-✅ /operadora/enlaces: activar/desactivar sorteos
-✅ /usuarios/u: mostrar campos codigo, cedula
-✅ /us  uarios/nuevo: campo cedula
-✅ /usuarios/u: estado, ciudad campo texto
-✅ /usuarios/u: al presionar boton de activar se borra el nombre
-✅ /usuarios/u: enviar a papelera
-✅ /usuarios/u/usuarios: columna activo solo lectura
-
-20.09.19
-✅ /saldo/recargas: actualizar lista de recargas cuando se procesa ⭐
-✅ /saldo/retiros: actualizar lista de retiros cuando se procesa ⭐
-✅ BuscarUsuario: buscar sin importar mayusculas/minusculas
-✅ /usuarios/cupos: registrar responsable y tiempo del tope
-✅ /usuarios/cupos: dialogo para confirmar remover cupo
-✅ /usuarios/cupos: subir campo de usuario al tope
-✅ /usuarios/cupos: optimizar interfaz de cupos
-✅ /usuarios/cupos: mostrar cupos de usuario
-✅ /saldo/historial: corregida seleccion de monedas disponibles
-✅ /operaciones/monitoreo: configuracion del boton de auto actualizar
-
-23.09.19
-✅ Prevenir registrar sorteos duplicados
-✅ /: mostrar estadisticas para usuarios no masters
 

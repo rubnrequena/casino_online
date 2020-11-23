@@ -9,6 +9,9 @@ function nueva(nombre, paga, tipo, sorteos, numeros) {
     numeros,
   });
 }
+function editar(operadora) {
+  return postRequest("/operadora/editar", operadora)
+}
 function todas() {
   return getRequest("/operadora/buscar/todas");
 }
@@ -25,11 +28,18 @@ function enlaceRemover(usuario, enlace) {
 function activar_enlace(usuario, enlace, activo) {
   return postRequest("/operadora/enlace/activar", { usuario, enlace, activo });
 }
+function remover(id) {
+  return getRequest('/operadora/remover', { id })
+}
 
-function buscar_id() {}
+function buscar_id(id) {
+  return getRequest("/operadora/buscar/id", { operadora: id })
+}
 
 export default {
   nueva,
+  editar,
+  remover,
   enlace,
   enlaceRemover,
   activar_enlace,

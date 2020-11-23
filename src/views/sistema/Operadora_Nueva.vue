@@ -10,11 +10,24 @@
       <v-text-field v-model="operadora.paga" label="Paga"></v-text-field>
       <v-select v-model="operadora.tipo" label="Tipo" :items="tipoNumeros"></v-select>
       <v-row>
-        <v-col lg="8">
-          <v-text-field @keypress="onKeyPress" v-model="sorteo" label="Horario" ref="sorteo"></v-text-field>
+        <v-col lg="3">
+          <v-select
+            label="Hora"
+            multiple
+            :items="horas"
+            v-model="hora"
+            item-text="text"
+            item-value="value"
+          ></v-select>
+        </v-col>
+        <v-col lg="3">
+          <v-select label="Minutos" :items="minutos" v-model="minutero"></v-select>
+        </v-col>
+        <v-col lg="2">
+          <v-select label="AM/PM" :items="meridianos" v-model="meridiano"></v-select>
         </v-col>
         <v-col lg="4">
-          <v-btn block color="primary" type="button" @click="addSorteo" :disabled="!sorteoValido">
+          <v-btn block color="primary" type="button" @click="addSorteo">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>
@@ -60,15 +73,35 @@ export default {
         { text: "Animal", value: "animal" },
         { text: "Terminal", value: "terminal" },
         { text: "Triples", value: "triple" }
-      ]
+      ],
+      minutero: "00",
+      minutos: [
+        { text: "00", value: "00" },
+        { text: "15", value: "15" },
+        { text: "30", value: "30" },
+        { text: "45", value: "45" }
+      ],
+      hora: [],
+      horas: [
+        { text: "01", value: "01" },
+        { text: "02", value: "02" },
+        { text: "03", value: "03" },
+        { text: "04", value: "04" },
+        { text: "05", value: "05" },
+        { text: "06", value: "06" },
+        { text: "07", value: "07" },
+        { text: "08", value: "08" },
+        { text: "09", value: "09" },
+        { text: "10", value: "10" },
+        { text: "11", value: "11" },
+        { text: "12", value: "12" }
+      ],
+      meridiano: "AM",
+      meridianos: ["AM", "PM"]
     };
   },
   computed: {
-    ...mapState("operadora", ["numeros"]),
-    sorteoValido() {
-      //TODO validar formato
-      return /^\d{1,2}:\d{1,2} AM|PM$/giu.test(this.sorteo);
-    }
+    ...mapState("operadora", ["numeros"])
   },
   methods: {
     ...mapActions("operadora", ["nueva", "numero_todos"]),
@@ -87,9 +120,11 @@ export default {
         .catch(error => alert(error));
     },
     addSorteo() {
-      this.operadora.sorteos.push(this.sorteo.toUpperCase());
-      this.sorteo = "";
-      this.$refs.sorteo.focus();
+      this.operadora.sorteos = this.operadora.sorteos.concat(
+        this.hora.map(hora => {
+          return `${hora}:${this.minutero} ${this.meridiano}`;
+        })
+      );
     },
     removerSorteo(indice) {
       this.operadora.sorteos.splice(indice, 1);
@@ -97,7 +132,7 @@ export default {
     onKeyPress(event) {
       if (event.charCode == 13) {
         event.preventDefault();
-        if (this.sorteoValido) this.addSorteo();
+        this.addSorteo();
       }
     }
   },

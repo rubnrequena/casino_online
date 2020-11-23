@@ -8,11 +8,11 @@ import RecuperarClave from "../views/core/RecuperarClave.vue";
 
 import Operadoras from "../views/sistema/Operadoras.vue";
 import Operadora from "../views/sistema/Operadora.vue";
+import Operadora_Nueva from "../views/sistema/Operadora_Nueva.vue";
 //import Operadora_Paga from "../views/sistema/Operadora_Paga.vue";
 import GruposPago from "../views/sistema/GruposPago.vue";
 import GruposPago_info from "../views/sistema/GrupoPago_info.vue";
 import Sorteos from "../views/sistema/Sorteos.vue";
-import Operadora_Nueva from "../views/sistema/Operadora_Nueva.vue";
 import Operadora_Numeros from "../views/sistema/Numeros.vue";
 import Enlaces from "../views/sistema/Enlaces.vue";
 import Premiar from "../views/sistema/Premiar.vue";
@@ -86,7 +86,6 @@ const routes = [
                 meta: { permiso: operadora.modificar },
               },
               { path: "numeros", component: Operadora_Numeros },
-              { path: "operadora/:operadora", component: Operadora },
             ],
             meta: {
               title: "Operadoras",
@@ -121,6 +120,7 @@ const routes = [
             path: "enlaces/:usuario?",
             component: Enlaces,
           },
+          { path: ":operadora", component: Operadora },
         ],
       },
       {

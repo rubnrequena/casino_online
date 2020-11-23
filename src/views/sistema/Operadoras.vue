@@ -8,14 +8,13 @@
       </v-btn>
     </v-app-bar>
     <v-data-table :items="operadorasActivas" :headers="headers">
-      <template v-slot:item._id="{ item }">
-        <v-btn icon :to="link(item)">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon :to="link(item)">
-          <v-icon color="red">mdi-trash-can</v-icon>
+      <template v-slot:item.nombre="{ item }">
+        <v-btn text :to="link(item)">
+          <v-icon left>mdi-pencil</v-icon>
+          {{item.nombre}}
         </v-btn>
       </template>
+      <template v-slot:item.sorteos="{ item }">{{item.sorteos.length}}</template>
       <template v-slot:item.tipo="{ item }">{{ item.tipo.toUpperCase() }}</template>
     </v-data-table>
   </div>
@@ -40,9 +39,8 @@ export default {
           value: "paga"
         },
         {
-          text: "",
-          value: "_id",
-          align: "end"
+          text: "SORTEOS",
+          value: "sorteos"
         }
       ]
     };
@@ -55,7 +53,7 @@ export default {
   },
   methods: {
     link(item) {
-      return `/sistema/operadoras/${item._id}`;
+      return `/operadora/${item._id}`;
     }
   }
 };
