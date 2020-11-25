@@ -26,12 +26,21 @@
 
     <v-data-table :items="sorteos" :headers="headers">
       <template v-slot:item.numero="{item}">
-        <v-text-field :value="item.numero"></v-text-field>
+        <v-text-field v-model="numeroSorteos[item._id]"></v-text-field>
+      </template>
+      <template v-slot:item.reiniciar="{item}">
+        <v-btn v-if="item.ganador==''" color="green" icon @click="premiar(item)">
+          <v-icon>mdi-check</v-icon>
+        </v-btn>
+        <v-btn v-else color="red" icon @click="reiniciar(item)">
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <sino
       v-model="premioDialog"
-      :text="`Confirma desea premiar ${premio.sorteo.descripcion} con ${premio.numero}`"
+      title="Confirmar premio"
+      :text="`Sorteo:<br/><b>${premio.descripcion}</b> <br/>Número: <b>${premio.ganador}</b>`"
       @submit="premiarSorteo"
       @cancel="cancelaPremiacion"
     ></sino>
@@ -47,79 +56,35 @@ export default {
       numeroSorteos: {},
       premioDialog: false,
       premio: {
-        sorteo: {}
+        descripcion: ""
       },
       sorteos: [],
       operadora: {},
       fecha: new Date().toISOString().substring(0, 10),
       hoy: new Date().toISOString(),
       headers: [
-        { text: "FECHA", value: "fecha" },
         { text: "DESCRIPCION", value: "descripcion" },
-        { text: "NUMERO", value: "numero" }
+        { text: "NUMERO", value: "numero" },
+        { text: "", value: "reiniciar" }
       ]
     };
   },
   computed: {
-    ...mapState("operadora", ["numeros", "operadoras"]),
-    numerosSearch() {
-      let operadora = this.operadoras.find(op => op._id == this.operadora);
-      if (!operadora) return [];
-      let numero = this.numeros.find(num => num._id == operadora.numeros);
-      if (!numero) return [];
-      else return numero.numeros;
-    }
+    ...mapState("operadora", ["numeros", "operadoras"])
   },
   methods: {
     ...mapActions("operadora", [
-      "sorteo_sinGanador",
+      "sorteos_buscarFecha",
       "sorteo_premiar",
-      "numero_todos"
+      "numero_todos",
+      "sorteo_reiniciar"
     ]),
-    async confirmarPremio(numero, sorteo) {
-      this.premio = { numero, sorteo };
-      this.premioDialog = true;
-      /* this.$toasted.show(
-        `Confirme premiacion para: ${sorteo.descripcion}, GANADOR: ${numero}`,
-        {
-          duration: 5000,
-          action: [
-            {
-              text: "SI",
-              onClick: (e, toast) => {
-                toast.text("Premiando sorteo, espere...").goAway(9999);
-                this.sorteo_premiar({
-                  numero: numero,
-                  sorteo: sorteo._id
-                })
-                  .then(() => {
-                    toast.goAway(1);
-                    this.$toasted.success("Sorteo premiado exitosamente", {
-                      duration: 2000
-                    });
-                  })
-                  .catch(error => {
-                    toast.goAway(1);
-                    this.$toasted.error(error, { duration: 2000 });
-                  });
-              }
-            },
-            {
-              text: "NO",
-              onClick: (e, toast) => {
-                this.cancelaPremiacion();
-                toast.text("Premiacion cancelada").goAway(1000);
-              }
-            }
-          ]
-        }
-      ); */
-    },
     premiarSorteo() {
-      this.sorteo_premiar({
-        numero: this.premio.numero,
-        sorteo: this.premio.sorteo._id
-      })
+      const payload = {
+        numero: this.premio.ganador,
+        sorteo: this.premio._id
+      };
+      this.sorteo_premiar(payload)
         .then(() => {
           this.$toasted.success("Sorteo premiado exitosamente", {
             duration: 2000
@@ -129,16 +94,42 @@ export default {
           this.$toasted.error(error, { duration: 2000 });
         });
     },
+    premiar(sorteo) {
+      const ganador = this.numeroSorteos[sorteo._id];
+      this.premio = sorteo;
+      sorteo.ganador = ganador;
+      this.premioDialog = true;
+    },
     cancelaPremiacion() {
-      this.numeroSorteos[this.premio.sorteo._id] = null;
-      this.premio = { sorteo: {} };
+      this.numeroSorteos[this.premio._id] = "";
+      this.premio.ganador = "";
     },
     buscar() {
       this.sorteos = [];
-      this.sorteo_sinGanador({
+      this.sorteos_buscarFecha({
         operadora: this.operadora,
         fecha: this.fecha
-      }).then(sorteos => (this.sorteos = sorteos));
+      }).then(sorteos => {
+        sorteos.forEach(sorteo => {
+          this.numeroSorteos[sorteo._id] = sorteo.ganador;
+        });
+        this.sorteos = sorteos;
+      });
+    },
+    reiniciar(sorteo) {
+      const n = this.numeroSorteos;
+
+      this.sorteo_reiniciar(sorteo._id)
+        .then(() => {
+          let numeros = { ...n };
+          numeros[sorteo._id] = "";
+          sorteo.ganador = "";
+          this.numeroSorteos = numeros;
+          this.$toasted.success("Sorteo reiniciado exitosamente");
+        })
+        .catch(error => {
+          this.$toasted.error(error);
+        });
     },
     numeroText(numero) {
       return `${numero.numero} ${numero.nombre.toUpperCase()}`;
@@ -155,4 +146,7 @@ export default {
 </script>
 
 <style>
+.alinear-centro {
+  padding-top: 50px;
+}
 </style>

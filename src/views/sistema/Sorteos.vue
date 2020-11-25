@@ -3,17 +3,15 @@
     <v-app-bar dark dense>
       Sorteos
       <v-spacer></v-spacer>
-      <v-btn type="submit" form="sorteo-form" color="success">
+      <v-btn type="submit" color="success" @click="registroDialog=true">
         <v-icon left>mdi-plus</v-icon>Registrar
       </v-btn>
     </v-app-bar>
     <v-form id="sorteo-form" @submit.prevent="registrar">
       <v-row>
-        <v-col cols="6">
-          <date-picker2 @change="fechaCambio" label="Desde" v-model="desde" />
-        </v-col>
-        <v-col cols="6">
-          <date-picker2 @change="fechaCambio" label="Hasta" v-model="hasta" />
+        <v-col cols="12">
+          <label>Fecha</label>
+          <date-picker2 @change="fechaCambio" label="Fecha" v-model="fecha" />
         </v-col>
       </v-row>
       <v-select
@@ -21,10 +19,10 @@
         item-text="nombre"
         item-value="_id"
         v-model="operadoraRegistrar"
+        @change="fechaCambio"
       ></v-select>
     </v-form>
-    <v-data-table :items="sorteosFiltro" :headers="header">
-      <template v-slot:item.operadora="{ item }">{{ item.operadora.nombre.toUpperCase() }}</template>
+    <v-data-table :items="sorteos" :headers="header">
       <template v-slot:item.cierra="{ item }">
         <template v-if="item.puedeAbrirse">
           <v-btn @click="cerrarSorteo_click(item._id)" icon v-if="!item.cerrado">
@@ -45,6 +43,24 @@
         </v-btn>
       </template>
     </v-data-table>
+    <v-dialog max-width="400" v-model="registroDialog">
+      <v-card>
+        <v-card-title>Dias a registrar</v-card-title>
+        <v-card-text>
+          <v-col cols="12">
+            <label>Desde</label>
+            <date-picker2 label="Desde" v-model="desde" />
+          </v-col>
+          <v-col cols="12">
+            <label>Hasta</label>
+            <date-picker2 label="Hasta" v-model="hasta" />
+          </v-col>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn type="submit" form="sorteo-form" color="success" block>Registrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -52,14 +68,14 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
+      registroDialog: false,
+      fecha: new Date().toISOString().substring(0, 10),
       desde: new Date().toISOString().substring(0, 10),
       hasta: new Date().toISOString().substring(0, 10),
       operadoraRegistrar: "",
       sorteos: [],
       header: [
-        { text: "FECHA", value: "fecha" },
         { text: "DESCRIPCION", value: "descripcion" },
-        { text: "OPERADORA", value: "operadora" },
         { text: "GANADOR", value: "ganador" },
         { text: "ABIERTO", value: "cierra" }
       ]
@@ -88,21 +104,28 @@ export default {
         desde: this.desde,
         hasta: this.hasta,
         operadora: this.operadoraRegistrar
-      }).then(() => this.buscarSorteos());
+      }).then(() => {
+        this.$toasted.success("Sorteos registrados...");
+      });
     },
     buscarSorteos() {
       let ahora = new Date().toISOString();
       this.sorteos_buscarFecha({
-        desde: this.desde,
-        hasta: this.hasta
-      }).then(sorteos => {
-        this.sorteos = sorteos.map(sorteo => {
-          sorteo.puedeAbrirse = ahora < sorteo.cierra;
-          if (sorteo.abierta == false) sorteo.cerrado = true;
-          else sorteo.cerrado = ahora > sorteo.cierra;
-          return sorteo;
+        fecha: this.fecha,
+        operadora: this.operadoraRegistrar
+      })
+        .then(sorteos => {
+          console.log("sorteos", sorteos);
+          this.sorteos = sorteos.map(sorteo => {
+            sorteo.puedeAbrirse = ahora < sorteo.cierra;
+            if (sorteo.abierta == false) sorteo.cerrado = true;
+            else sorteo.cerrado = ahora > sorteo.cierra;
+            return sorteo;
+          });
+        })
+        .catch(error => {
+          alert(error);
         });
-      });
     },
     fechaCambio() {
       this.buscarSorteos();
@@ -131,9 +154,6 @@ export default {
         }
       });
     }
-  },
-  mounted() {
-    this.buscarSorteos();
   }
 };
 </script>

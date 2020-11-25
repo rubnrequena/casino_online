@@ -13,17 +13,14 @@ export default {
   premiar(sorteo, numero) {
     return postRequest("/sorteo/premiar", { sorteo, numero });
   },
-  reiniciar(sorteo, numero) {
-    return postRequest("/sorteo/reiniciar", { sorteo, numero });
+  reiniciar(sorteo) {
+    return postRequest("/sorteo/reiniciar", { sorteo });
   },
   buscar: {
-    fecha(desde, hasta, operadora, campos) {
+    fecha(fecha, operadora) {
       let data = {
-        desde,
-        hasta,
-        campos,
-      };
-      if (operadora) data.operadora = operadora;
+        fecha, operadora
+      }
       return getRequest("/sorteo/buscar/fecha", data);
     },
     sinGanador(operadora, fecha) {

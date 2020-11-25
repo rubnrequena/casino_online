@@ -74,10 +74,9 @@ export default {
       return sorteoApi.registrar(desde, hasta, operadora);
     },
 
-    sorteos_buscarFecha(store, { desde, hasta, operadora }) {
+    sorteos_buscarFecha(store, { fecha, operadora }) {
       return sorteoApi.buscar.fecha(
-        desde,
-        hasta,
+        fecha,
         operadora,
         "fecha descripcion operadora cierra"
       );
@@ -88,8 +87,8 @@ export default {
     sorteo_premiar(store, { sorteo, numero }) {
       return sorteoApi.premiar(sorteo, numero);
     },
-    sorteo_reiniciar(store, { sorteo, numero }) {
-      return sorteoApi.reiniciar(sorteo, numero);
+    sorteo_reiniciar(store, sorteo) {
+      return sorteoApi.reiniciar(sorteo);
     },
     abrirSorteo(store, sorteoId) {
       return sorteoApi.abrir(sorteoId);
