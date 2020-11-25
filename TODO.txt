@@ -1,38 +1,52 @@
+#general
+- activar caja de busqueda
+
+/operaciones
+- iniciar con otra sesion
+
 #buscador de usuarios
 - buscar los usuarios a demanda, no precargar todos los usuarios
 - buscar usuarios por rol (solo roles inferiores)
 - ir haciendo cache de las busquedas
 - reinicar campo de busqueda al elegir usuario
 
+/operaciones/monitoreo
+✅ mostrar sorteo abierto/cerrado
+- Numeros: añadir columna numeros solicitados
+
 /operadora/premiar
-- activar la premiacion escribiendo los numeros
-- falta boton para reiniciar sorteo
+✅ activar la premiacion escribiendo los numeros
+✅ falta boton para reiniciar sorteo
+
+/tickets
+- anular tickets
+- buscar tickets
+- administrador
+- simular premiacion
 
 /usuarios/lista/:usuario
 - bloquear boton de url en el ultimo nivel (pos,online)
+- mostrar otros masters y auditores
 
 /usuarios/menu
 - desactivar del menu
 
+
 /cupos
 - reparar los select al abrir modal de registro (no funcionan)
 - reiniciar monto al elegir tope
+- prevenir topes duplicados
 
 /informes
 - mostrar informes (sesiones, actividad, etc)
 
-⏳ Sorteos: Registrar sorteos automaticamente
-⏳ AppBar: activar caja de busqueda
+
+---------------------
 
 ⏳ /perfil: crear perfil usuario
 ⏳ /perfil: modificar contraseña
 ⏳ /perfil: modificar datos perfil
 
-⏳ /operadora/operadoras: remover/editar operadora
-⏳ /operadora/operadoras: mostrar horarios al hacer click sobre nombre
-⏳ /operadora/operadoras: cambiar formato de fecha a d/m/y
-
-✅ /operaciones/monitoreo: mostrar sorteo abierto/cerrado
 
 ⏳ /usuarios/u: marcar favorito
 ✅ /usuarios/nuevo: multi moneda
@@ -41,21 +55,6 @@
 ⏳ /usuarios/u/seguridad: estilizar notificaciones
 ⏳ /usuarios/permisos: nombre de los permisos ⭐
 ⏳ /usuarios/lista: mostrar otros masters y auditores
-/usuarios/cupos
-⏳ alinear fecha con sorteo
-⏳ prevenir topes duplicados
-⏳ /reportes/general
-/reportes/usuarios:
-⏳ reporte por moneda ⭐
-/sistema
-⏳ iniciar con otra sesion
-/informes
-⏳ informe de sucesos
-⏳ informe de errores
-/tickets
-⏳ administrador
-⏳ anular tickets
-⏳ simular premiacion
 
 *Usuarios
 rif, responsable, direccion, jugada minima ticket, jugada minima numero, monto maximo ventas
