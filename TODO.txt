@@ -1,6 +1,10 @@
 #general
 - activar caja de busqueda
 
+/
+- estadistica usuarios
+- balance de saldos
+
 /operaciones
 - iniciar con otra sesion
 
@@ -9,6 +13,7 @@
 - buscar usuarios por rol (solo roles inferiores)
 - ir haciendo cache de las busquedas
 - reinicar campo de busqueda al elegir usuario
+
 
 /operaciones/monitoreo
 ✅ mostrar sorteo abierto/cerrado
@@ -19,8 +24,8 @@
 ✅ falta boton para reiniciar sorteo
 
 /tickets
-- anular tickets
-- buscar tickets
+✅ anular tickets
+✅ buscar tickets
 - administrador
 - simular premiacion
 

@@ -1,12 +1,12 @@
-const { getHandler } = require("./repositorio");
+const { getRequest, postRequest } = require("./repositorio");
 
 module.exports = {
   monitor: {
     admin(sorteo, rol, moneda) {
-      return getHandler("/ticket/monitor/admin", { sorteo, rol, moneda });
+      return getRequest("/ticket/monitor/admin", { sorteo, rol, moneda });
     },
     numero(sorteo, moneda) {
-      return getHandler("/ticket/monitor/numero", { sorteo, moneda }).then(
+      return getRequest("/ticket/monitor/numero", { sorteo, moneda }).then(
         (data) =>
           data.sort((a, b) => {
             return parseInt(a._id) - parseInt(b._id);
@@ -14,12 +14,15 @@ module.exports = {
       );
     },
     admin_tickets(sorteo, usuario) {
-      return getHandler("/ticket/administrador", { sorteo, usuario });
-    },
+      return getRequest("/ticket/administrador", { sorteo, usuario });
+    }
   },
   buscar: {
     serial(serial) {
-      return getHandler("/ticket/buscar/serial", { serial });
+      return getRequest("/ticket/buscar/serial", { serial });
     },
   },
+  anular(serial) {
+    return postRequest('/ticket/anular', { serial })
+  }
 };

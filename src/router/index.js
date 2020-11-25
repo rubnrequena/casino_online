@@ -49,6 +49,11 @@ import Reporte_Sorteos from "../views/reportes/Sorteos.vue";
 
 //#endregion
 
+//#region Tickets
+import Ticket_Buscar from "../views/tickets/BuscarTicket.vue";
+import Ticket_Anular from "../views/tickets/AnularTicket.vue"
+//#endregion
+
 import store from "../store/index";
 import {
   operadora,
@@ -247,6 +252,20 @@ const routes = [
           { path: "sorteos", component: Reporte_Sorteos },
           { path: "sorteos/:id", component: Reporte_Sorteos },
         ],
+      },
+      {
+        path: "/ticket",
+        component: { render },
+        children: [
+          {
+            path: "buscar",
+            component: Ticket_Buscar
+          },
+          {
+            path: "anular",
+            component: Ticket_Anular
+          }
+        ]
       },
       {
         path: "/no-autorizado",

@@ -1,4 +1,4 @@
-import { getHandler, getRequest, postRequest } from "./repositorio";
+import { getRequest, postRequest } from "./repositorio";
 
 export default {
   registrar(desde, hasta, operadora) {
@@ -24,7 +24,7 @@ export default {
       return getRequest("/sorteo/buscar/fecha", data);
     },
     sinGanador(operadora, fecha) {
-      return getHandler("/sorteo/singanador", { operadora, fecha });
+      return getRequest("/sorteo/singanador", { operadora, fecha });
     },
   },
 };

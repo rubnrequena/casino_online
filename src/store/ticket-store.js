@@ -18,5 +18,8 @@ export default {
     buscar_serial(store, serial) {
       return ticketApi.buscar.serial(serial);
     },
+    anular_ticket(store, serial) {
+      return ticketApi.anular(serial)
+    }
   },
 };
