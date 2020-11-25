@@ -2,7 +2,7 @@
   <v-dialog v-model="value" max-width="300">
     <v-card>
       <v-card-title>{{title}}</v-card-title>
-      <v-card-text class="content">{{text}}</v-card-text>
+      <v-card-text class="content" v-html="text"></v-card-text>
       <v-card-actions>
         <v-btn text color="red" @click="cancelar">
           <v-icon left>mdi-cancel</v-icon>Cancelar
