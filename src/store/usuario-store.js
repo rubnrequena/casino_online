@@ -110,5 +110,11 @@ export default {
     cambiar_clave(store, { usuario, clave }) {
       return usuarioApi.cambiar_clave(usuario, clave);
     },
+    comision_usuario(store, usuario) {
+      return usuarioApi.comision.buscar.usuario(usuario)
+    },
+    comision_editar(store, { usuario, comision }) {
+      return usuarioApi.comision.editar(usuario, comision)
+    }
   },
 };

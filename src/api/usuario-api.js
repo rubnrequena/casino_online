@@ -41,4 +41,20 @@ module.exports = {
       },
     },
   },
+  comision: {
+    editar(usuario, comision) {
+      return postRequest('/usuario/comision/editar', {
+        usuario, comision: comision._id, comisiones: {
+          comision: comision.comision,
+          participacion: comision.participacion,
+          utilidad: comision.utilidad
+        }
+      })
+    },
+    buscar: {
+      usuario(usuario) {
+        return getRequest("/usuario/comision/usuario", { usuario })
+      }
+    }
+  }
 };

@@ -33,6 +33,8 @@ import Usuario_Cupos from "../views/usuarios/usuario/Cupos.vue";
 import Usuario_Permisos from "../views/usuarios/usuario/Permisos.vue";
 import Usuario_Hijos from "../views/usuarios/usuario/Hijos.vue";
 import Usuario_Seguridad from "../views/usuarios/usuario/Seguridad.vue";
+import Comisiones from "../views/usuarios/Comisiones.vue"
+
 import Menu from "../views/interfaz/menus/MenuIndex.vue";
 import MenuNuevo from "../views/interfaz/menus/Nuevo.vue";
 
@@ -225,6 +227,10 @@ const routes = [
             component: Permiso_Index,
             meta: { permiso: permisos.leer },
           },
+          {
+            path: 'comisiones',
+            component: Comisiones
+          }
         ],
         meta: {
           permiso: usuarios.leer,
