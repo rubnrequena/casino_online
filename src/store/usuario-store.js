@@ -115,6 +115,9 @@ export default {
     },
     comision_editar(store, { usuario, comision }) {
       return usuarioApi.comision.editar(usuario, comision)
+    },
+    comision_nueva(store, { usuario, operadora, comision, participacion, utilidad }) {
+      return usuarioApi.comision.nueva(usuario, operadora, comision, participacion, utilidad)
     }
   },
 };

@@ -42,6 +42,11 @@ module.exports = {
     },
   },
   comision: {
+    nueva(usuario, operadora, comision, participacion, utilidad) {
+      return postRequest('/usuario/comision/registro', {
+        usuario, operadora, comision, participacion, utilidad
+      })
+    },
     editar(usuario, comision) {
       return postRequest('/usuario/comision/editar', {
         usuario, comision: comision._id, comisiones: {
