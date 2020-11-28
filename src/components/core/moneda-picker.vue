@@ -20,7 +20,7 @@ import { mapState } from "vuex";
 export default {
   props: {
     value: {
-      type: Object
+      type: [Array, Object]
     }
   },
   computed: {

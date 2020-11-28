@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-toolbar dark src="/img/chart-header.png">
+    <v-toolbar color="#6A76AB" dark>
+      <template v-slot:img="{ props }">
+        <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"></v-img>
+      </template>
       <h2>Estadisticas Usuarios</h2>
       <v-spacer></v-spacer>
       <v-btn text color="green lighten-2">
@@ -24,22 +27,21 @@
       </v-col>
     </v-row>
     <div v-if="manejaBalance">
-      <v-toolbar dark src="/img/header-chart.jpg">
+      <v-toolbar color="#6A76AB" dark>
+        <template v-slot:img="{ props }">
+          <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"></v-img>
+        </template>
         <h2>Balance Saldos</h2>
         <v-spacer></v-spacer>
+        <moneda-picker v-model="moneda" @change="moneda_change"></moneda-picker>
       </v-toolbar>
-      <v-simple-table>
-        <tbody>
-          <tr v-for="(saldo, index) in stats.balance" :key="index">
-            <td class="text-uppercase">{{saldo.nombre}}</td>
-            <td class="text-uppercase">{{saldo.tiempo | formatDate}}</td>
-            <td>
-              {{saldo.saldo | formatNumber}}
-              <span class="text-uppercase">{{saldo.moneda}}</span>
-            </td>
-          </tr>
-        </tbody>
-      </v-simple-table>
+      <v-data-table :items="balance" :headers="balanceHeader">
+        <template v-slot:item.usuarios="{item}">
+          <span class="text-uppercase">{{nombrePOS(item.usuarios)}}</span>
+        </template>
+        <template v-slot:item.tiempo="{item}">{{item.tiempo|formatDate("DD/MM/YYYY hh:mm:ss a")}}</template>
+        <template v-slot:item.balance="{item}">{{item.balance | formatNumber}}</template>
+      </v-data-table>
     </div>
   </div>
 </template>
@@ -49,21 +51,41 @@ import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      status: {}
+      status: {},
+      moneda: {},
+      balanceHeader: [
+        { text: "POS", value: "usuarios" },
+        { text: "ULT.TRANSACCION", value: "tiempo" },
+        { text: "SALDO", value: "balance" }
+      ]
     };
   },
   computed: {
     ...mapState(["stats"]),
-    ...mapState("auth", ["usuario"])
+    ...mapState("auth", ["usuario"]),
+    ...mapState("saldo", ["balance"])
   },
   methods: {
     ...mapActions(["getStatus"]),
+    ...mapActions("saldo", {
+      balances: "leerBalance"
+    }),
+    moneda_change() {
+      this.balances({ usuario: this.usuario._id, moneda: this.moneda.siglas });
+    },
     manejaBalance() {
-      return this.usuario.rol == "master" || this.usuario.rol == "agente";
+      const permiso = this.usuario.rol.match(/master|agente/gi);
+      return permiso;
+    },
+    nombrePOS(usuarios) {
+      const last = usuarios[usuarios.length - 1];
+      if (last) return last.nombre;
+      else "[Error]";
     }
   },
   mounted() {
     this.getStatus();
+    this.moneda_change();
   }
 };
 </script>

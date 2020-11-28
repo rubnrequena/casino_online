@@ -13,8 +13,8 @@ module.exports = {
   retiros(procesada, limite) {
     return getHandler("/saldo/retiro/historia/padre", { procesada, limite });
   },
-  balance() {
-    return getHandler("/saldo/balance");
+  balance(usuario, moneda) {
+    return getHandler("/saldo/balance", { usuario, moneda });
   },
   monedas() {
     return getHandler("/sistema/monedas");

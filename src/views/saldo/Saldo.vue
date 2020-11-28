@@ -5,24 +5,13 @@
         <btn-atras label="Balance de Saldos"></btn-atras>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text>
-        <span v-if="moneda">{{total | formatNumber}} {{moneda}}</span>
-        <span v-else>--</span>
-      </v-btn>
+      <moneda-picker v-model="moneda"></moneda-picker>
     </v-toolbar>
-    <v-select clearable v-model="moneda" :items="monedas">
-      <template v-slot:selection="{item}">
-        <span class="text-uppercase">{{item}}</span>
-      </template>
-      <template v-slot:item="{item}">
-        <span class="text-uppercase">{{item}}</span>
-      </template>
-    </v-select>
-    <v-data-table :dense="balanceFiltro.length>10" :items="balanceFiltro" :headers="header">
-      <template v-slot:item.nombre="{item}">
-        <v-btn text :to="`/usuarios/u/${item._id}`">
+    <v-data-table :items="balance" :headers="header">
+      <template v-slot:item.usuarios="{item}">
+        <v-btn text>
           <v-icon left>mdi-account</v-icon>
-          {{item.nombre}}
+          {{nombrePOS(item.usuarios)}}
         </v-btn>
       </template>
       <template v-slot:item.tiempo="{item}">{{item.tiempo | formatDate}}</template>
@@ -39,40 +28,31 @@ import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
-      moneda: null,
-      monedas: [],
+      moneda: {},
       header: [
-        { text: "NOMBRE", value: "nombre" },
+        { text: "NOMBRE", value: "usuarios" },
         { text: "ULT. MOVIMIENTO", value: "tiempo" },
         { text: "BALANCE", value: "balance" }
       ]
     };
   },
   computed: {
-    ...mapState("saldo", ["balance"]),
-    total() {
-      if (!this.moneda) return "0";
-      return this.balanceFiltro.reduce((prev, saldo) => {
-        return saldo.balance + prev;
-      }, 0);
-    },
-    balanceFiltro() {
-      if (!this.moneda) return this.balance;
-      return this.balance
-        .filter(saldo => saldo.moneda == this.moneda)
-        .sort((a, b) => b.balance - a.balance);
-    }
+    ...mapState("auth", ["usuario"]),
+    ...mapState("saldo", ["balance"])
   },
   methods: {
-    ...mapActions("saldo", ["leerBalance"])
+    ...mapActions("saldo", ["leerBalance"]),
+    nombrePOS(usuarios) {
+      const last = usuarios[usuarios.length - 1];
+      console.log(last);
+      if (last) return last.nombre;
+      else "[Error]";
+    }
   },
   mounted() {
-    this.leerBalance().then(() => {
-      console.log(this.balance);
-      this.monedas = this.balance.reduce((prev, saldo) => {
-        if (prev.indexOf(saldo.moneda) == -1) prev.push(saldo.moneda);
-        return prev;
-      }, []);
+    this.leerBalance({
+      usuario: this.usuario._id,
+      moneda: this.moneda.siglas
     });
   }
 };

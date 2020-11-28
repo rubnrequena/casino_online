@@ -78,8 +78,8 @@ export default {
     on_retiros({ commit }) {
       saldoApi.retiros(1, 100).then((retiros) => commit("RETIROS", retiros));
     },
-    leerBalance({ commit }) {
-      saldoApi.balance().then((balance) => commit("BALANCE", balance));
+    leerBalance({ commit }, { usuario, moneda }) {
+      saldoApi.balance(usuario, moneda).then((balance) => commit("BALANCE", balance));
     },
     metodosPago_usuario({ commit }, usuarioId) {
       return saldoApi.metodos_pago.buscar.usuario(usuarioId).then((metodos) => {
