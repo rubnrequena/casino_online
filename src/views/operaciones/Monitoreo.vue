@@ -76,6 +76,13 @@
       <v-tab-item>
         <v-card flat tile>
           <v-data-table :dense="numeros.length>20" :items="numeros" :headers="headerNumeros">
+            <template v-slot:item._id="{item}">
+              {{item._id}}
+              <span
+                style="color:grey; font-style:italic;"
+                v-if="item.ultPremio"
+              >- {{diferenciaDias(item.ultPremio.fecha)}}d</span>
+            </template>
             <template v-slot:item.jugado="{item}">
               {{item.jugado | formatNumber}}
               <strong
@@ -92,10 +99,12 @@
               </span>
             </template>
             <template v-slot:item.jugadas="{item}">
-              {{item.jugadas | formatNumber()}}
-              <strong
-                style="color:grey;"
-              >{{item.pr_jugadas | formatNumber(porcentaje)}}%</strong>
+              <v-btn text>
+                {{item.jugadas | formatNumber()}}
+                <strong
+                  style="color:grey;"
+                >{{item.pr_jugadas | formatNumber(porcentaje)}}%</strong>
+              </v-btn>
             </template>
           </v-data-table>
         </v-card>
@@ -110,6 +119,7 @@
 <script>
 import AdminTicketsUsuario from "@/components/ticket/admin-tickets-usuario";
 import { mapActions, mapState } from "vuex";
+import moment from "moment-mini";
 export default {
   components: {
     "admin-tickets-usuario": AdminTicketsUsuario
@@ -140,12 +150,14 @@ export default {
         { text: "NUMERO", value: "_id" },
         { text: "JUGADO", value: "jugado" },
         { text: "PREMIO", value: "premio" },
-        { text: "JUGADAS", value: "jugadas" }
+        { text: "JUGADAS", value: "jugadas" },
+        { text: "SOLICITADO", value: "solicitado" }
       ],
       usuarioMonitoreado: null,
       ticketsUsuario: [],
       totalJugado: 0,
       totalJugadas: 0,
+      historia: [],
 
       tiempoActualizacion: 0,
       tiemposLabel: ["M", "5S", "10S", "30S"],
@@ -163,7 +175,6 @@ export default {
       monedas: state => state.usuario.moneda
     }),
     estatusSorteo() {
-      console.log(this.sorteo);
       const ahora = new Date();
       const cierre = new Date(this.sorteo.cierra);
       if (!this.sorteo) return false;
@@ -178,7 +189,11 @@ export default {
       "monitor_numero",
       "admin_tickets"
     ]),
-    ...mapActions("operadora", ["abrirSorteo", "cerrarSorteo"]),
+    ...mapActions("operadora", [
+      "abrirSorteo",
+      "cerrarSorteo",
+      "numeros_historia"
+    ]),
     cambiarStatus() {
       if (!this.sorteo) return;
       if (this.estatusSorteo)
@@ -203,6 +218,7 @@ export default {
           });
     },
     buscarVentas() {
+      this.buscarHistoria();
       clearTimeout(this.tiemposInterval);
       this.iconoRefresco = "mdi-update";
       this.monitor_admin({
@@ -233,7 +249,7 @@ export default {
           venta.pr_jugado = (venta.jugado * 100) / this.totalJugado;
           venta.pr_jugadas = (venta.jugadas * 100) / this.totalJugadas;
         });
-        this.numeros = numeros;
+        this.numeros = numeros.map(this.asignarUltimoPremio);
       });
 
       this.iniciarCronometro();
@@ -268,6 +284,28 @@ export default {
       if (this.tiempoActualizacion > this.tiemposNum.length)
         this.tiempoActualizacion = 0;
       this.iniciarCronometro();
+    },
+    buscarHistoria() {
+      this.numeros_historia(this.sorteo.operadora)
+        .then(historia => {
+          this.historia = historia;
+          this.numeros = this.numeros.map(this.asignarUltimoPremio);
+        })
+        .catch(error => {
+          this.$toasted.error(error, { duration: 5000 });
+        });
+    },
+    asignarUltimoPremio(numero) {
+      numero.ultPremio = this.historia.find(
+        nhistoria => nhistoria.numero == numero._id
+      );
+      return numero;
+    },
+    diferenciaDias(fecha) {
+      const premio = moment(fecha);
+      const hoy = moment();
+      const diff = hoy.diff(premio, "days");
+      return diff;
     }
   },
   mounted() {

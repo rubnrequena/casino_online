@@ -4,7 +4,7 @@
       Sorteos
       <v-spacer></v-spacer>
       <v-btn type="submit" color="success" @click="registroDialog=true">
-        <v-icon left>mdi-plus</v-icon>Registrar
+        <btn-atras label="Sorteos"></btn-atras>
       </v-btn>
     </v-app-bar>
     <v-form id="sorteo-form" @submit.prevent="registrar">

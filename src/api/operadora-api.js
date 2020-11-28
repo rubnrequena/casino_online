@@ -35,6 +35,9 @@ function remover(id) {
 function buscar_id(id) {
   return getRequest("/operadora/buscar/id", { operadora: id })
 }
+function historia_ganadores(operadora) {
+  return getRequest('/operadora/ultimos_ganadores', { operadora })
+}
 
 export default {
   nueva,
@@ -56,6 +59,7 @@ export default {
     nuevo(nombre, numeros) {
       return postRequest("/operadora/numero/nuevo", { nombre, numeros });
     },
+    historia: historia_ganadores
   },
   paga: {
     buscar() {

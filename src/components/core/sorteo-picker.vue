@@ -89,9 +89,9 @@ export default {
   methods: {
     ...mapActions("operadora", ["sorteos_buscarFecha"]),
     buscar() {
+      const fecha = this.fecha;
       this.sorteos_buscarFecha({
-        desde: this.fecha,
-        hasta: this.fecha,
+        fecha,
         operadora: this.operadoraId
       }).then(sorteos => {
         this.sorteos = sorteos;

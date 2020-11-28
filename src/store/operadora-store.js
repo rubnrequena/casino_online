@@ -108,6 +108,9 @@ export default {
         return numero;
       });
     },
+    numeros_historia(store, operadora) {
+      return operadoraApi.numero.historia(operadora)
+    },
 
     usuario_paga({ commit }, usuario) {
       return operadoraApi.paga.buscar(usuario).then((pagos) => {
