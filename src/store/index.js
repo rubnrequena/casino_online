@@ -31,6 +31,7 @@ export default new Vuex.Store({
     menuData: [],
     validURLs: [],
     stats: {},
+    moneda: null,
   },
   getters: {
     menuVisible(state) {
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    SET_MONEDA(state, value) {
+      state.moneda = value
+    },
     MENU(state, value) {
       state.menu = value;
     },
