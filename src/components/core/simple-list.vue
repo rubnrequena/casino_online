@@ -36,7 +36,7 @@ export default {
       default: "Esperando seleccion..."
     },
     value: {
-      type: Object
+      type: [Object, String]
     },
     items: Array,
     "item-text": {

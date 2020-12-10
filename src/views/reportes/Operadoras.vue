@@ -3,9 +3,6 @@
     <v-toolbar dark dense src="https://picsum.photos/1000/100">
       <btn-atras label="Reporte Operadoras"></btn-atras>
       <v-spacer></v-spacer>
-      <v-btn @click="relacion=!relacion" outlined>
-        <v-icon>mdi-percent</v-icon>Relacion
-      </v-btn>
       <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
     </v-toolbar>
     <v-row>

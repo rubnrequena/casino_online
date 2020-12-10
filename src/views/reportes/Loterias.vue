@@ -1,8 +1,12 @@
 <template>
   <div>
-    <v-toolbar dark dense>
+    <v-toolbar color="#6A76AB" dense dark src="https://picsum.photos/1920/1080?random">
+      <template v-slot:img="{ props }">
+        <v-img v-bind="props" gradient="to top right, rgba(0,0,0,.7), rgba(25,32,72,.7)"></v-img>
+      </template>
       <btn-atras label="Reporte Loterias"></btn-atras>
       <v-spacer></v-spacer>
+      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
     </v-toolbar>
     <v-row>
       <v-col>
@@ -19,7 +23,6 @@
         </v-btn>
       </v-col>
     </v-row>
-    <reporte-totales :columnas="headerTotal" v-model="reporteData"></reporte-totales>
     <reporte :items="reporteData" :headers="headers"></reporte>
   </div>
 </template>
@@ -27,11 +30,9 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import { hoy } from "../../utils/date-util";
-import reporte_totales from "./reporte-totales";
 import Reporte from "./Reporte";
 export default {
   components: {
-    "reporte-totales": reporte_totales,
     reporte: Reporte
   },
   data() {
@@ -39,6 +40,7 @@ export default {
       desde: hoy,
       hasta: hoy,
       reporteData: [],
+      moneda: {},
       headers: [
         { text: "OPERADORA", value: "operadora", total: false },
         { text: "VENTAS", value: "venta" },
@@ -64,7 +66,7 @@ export default {
       this.get_reporte({
         desde: this.desde,
         hasta: this.hasta,
-        moneda: "ves"
+        moneda: this.moneda.siglas
       }).then(reportes => {
         this.reporteData = reportes;
       });

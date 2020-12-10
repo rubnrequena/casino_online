@@ -70,14 +70,17 @@ export default {
     buscarHijos_cercanos(store, padreId) {
       return usuarioApi.buscar.hijos_cercanos(padreId);
     },
-    buscarRol(store, { rol, usuario }) {
-      return usuarioApi.buscar.rol(rol, usuario);
+    buscarRol(store, rol) {
+      return usuarioApi.buscar.rol(rol);
     },
     buscarId(store, usuarioId) {
       return usuarioApi.buscar.id(usuarioId);
     },
     buscarEnlace(store, usuarioId) {
       return usuarioApi.buscar.enlaces(usuarioId);
+    },
+    buscarTermino(store, termino) {
+      return usuarioApi.buscar.termino(termino)
     },
     usuarioNivel({ state }, rol) {
       return state.niveles[rol].hijos;

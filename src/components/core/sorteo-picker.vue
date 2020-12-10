@@ -1,7 +1,7 @@
 <template>
   <div>
     <slot :sorteo="sorteo" :click="abrir">
-      <v-btn text block outlined @click="abrir">
+      <v-btn :disabled="disabled" text block outlined @click="abrir">
         <span>{{sorteo.descripcion}}</span>
       </v-btn>
     </slot>
@@ -74,7 +74,6 @@ export default {
   },
   watch: {
     operadora(value) {
-      console.log("operadora cambio", this.operadoraNombre);
       this.operadoraId = value;
       this.buscar();
     },
@@ -113,6 +112,10 @@ export default {
     }
   },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     value: Object,
     operadora: String,
     multiple: {

@@ -1,9 +1,13 @@
 <template>
   <div>
-    <v-toolbar dark dense>
-      <btn-atras label="Sorteos"></btn-atras>
+    <v-app-bar color="#6A76AB" dense dark src="https://picsum.photos/1920/1080?random">
+      <template v-slot:img="{ props }">
+        <v-img v-bind="props" gradient="to top right, rgba(0,0,0,.7), rgba(25,32,72,.7)"></v-img>
+      </template>
+      <btn-atras label="Reporte Sorteo"></btn-atras>
       <v-spacer></v-spacer>
-    </v-toolbar>
+      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
+    </v-app-bar>
     <v-row>
       <v-col>
         Desde:
@@ -28,7 +32,7 @@
           :items="operadoras"
           item-text="nombre"
           item-value="_id"
-          maxWidth="400"
+          :maxWidth="400"
           @change="onBuscar"
         ></simple-list>
       </v-col>
@@ -50,7 +54,8 @@ export default {
       desde: hoy,
       hasta: hoy,
       reporteData: [],
-      operadora: null,
+      operadora: "",
+      moneda: {},
       headers: [
         { text: "SORTEO", value: "sorteo", total: false },
         { text: "VENTAS", value: "venta" },
@@ -76,7 +81,7 @@ export default {
         operadora: this.operadora,
         desde: this.desde,
         hasta: this.hasta,
-        moneda: "ves"
+        moneda: this.moneda.siglas
       }).then(reportes => {
         this.reporteData = reportes;
       });

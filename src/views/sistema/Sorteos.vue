@@ -3,9 +3,7 @@
     <v-app-bar dark dense>
       Sorteos
       <v-spacer></v-spacer>
-      <v-btn type="submit" color="success" @click="registroDialog=true">
-        <btn-atras label="Sorteos"></btn-atras>
-      </v-btn>
+      <v-btn type="submit" color="success" @click="registroDialog=true">Registrar</v-btn>
     </v-app-bar>
     <v-form id="sorteo-form" @submit.prevent="registrar">
       <v-row>
@@ -61,6 +59,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <sino
+      v-model="reiniciarDialog"
+      title="Reiniciar premio"
+      :text="`Confirma desea reiniciar premio`"
+      @submit="reiniciarSorteo_ok"
+      @cancel="reiniciarSorteo_cancelar"
+    />
   </div>
 </template>
 <script>
@@ -69,6 +74,8 @@ export default {
   data() {
     return {
       registroDialog: false,
+      reiniciarDialog: false,
+      reiniciarSorteo: {},
       fecha: new Date().toISOString().substring(0, 10),
       desde: new Date().toISOString().substring(0, 10),
       hasta: new Date().toISOString().substring(0, 10),
@@ -105,17 +112,18 @@ export default {
         hasta: this.hasta,
         operadora: this.operadoraRegistrar
       }).then(() => {
-        this.$toasted.success("Sorteos registrados...");
+        this.$toasted.success("Sorteos registrados...", { duration: 3000 });
+        this.buscarSorteos();
       });
     },
     buscarSorteos() {
+      if (!this.operadoraRegistrar) return;
       let ahora = new Date().toISOString();
       this.sorteos_buscarFecha({
         fecha: this.fecha,
         operadora: this.operadoraRegistrar
       })
         .then(sorteos => {
-          console.log("sorteos", sorteos);
           this.sorteos = sorteos.map(sorteo => {
             sorteo.puedeAbrirse = ahora < sorteo.cierra;
             if (sorteo.abierta == false) sorteo.cerrado = true;
@@ -141,17 +149,16 @@ export default {
       });
     },
     reiniciarSorteo_click(sorteo) {
-      this.$toasted.show(`Confirme reinicio de: ${sorteo.descripcion}`, {
-        duration: 5000,
-        action: {
-          text: "OK",
-          onClick: (e, toast) => {
-            this.sorteo_reiniciar({ sorteo: sorteo._id }).then(() => {
-              toast.text("Sorteo Reiniciado").goAway(1000);
-              this.buscarSorteos();
-            });
-          }
-        }
+      this.reiniciarSorteo = sorteo;
+      this.reiniciarDialog = true;
+    },
+    reiniciarSorteo_cancelar() {
+      this.reiniciarSorteo = null;
+    },
+    reiniciarSorteo_ok() {
+      console.log("sorteo >>", this.reiniciarSorteo);
+      this.sorteo_reiniciar(this.reiniciarSorteo._id).then(() => {
+        this.buscarSorteos();
       });
     }
   }

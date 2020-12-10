@@ -44,6 +44,13 @@
       @submit="premiarSorteo"
       @cancel="cancelaPremiacion"
     ></sino>
+    <sino
+      v-model="reinicioDialog"
+      title="Reiniciar premio"
+      :text="`Confirma desea reiniciar premio`"
+      @submit="reiniciar"
+      @cancel="cancelaPremiacion"
+    />
   </div>
 </template>
 
@@ -66,7 +73,9 @@ export default {
         { text: "DESCRIPCION", value: "descripcion" },
         { text: "NUMERO", value: "numero" },
         { text: "", value: "reiniciar" }
-      ]
+      ],
+
+      reinicioDialog: false
     };
   },
   computed: {
@@ -125,7 +134,9 @@ export default {
           numeros[sorteo._id] = "";
           sorteo.ganador = "";
           this.numeroSorteos = numeros;
-          this.$toasted.success("Sorteo reiniciado exitosamente");
+          this.$toasted.success("Sorteo reiniciado exitosamente", {
+            duration: 3000
+          });
         })
         .catch(error => {
           this.$toasted.error(error);

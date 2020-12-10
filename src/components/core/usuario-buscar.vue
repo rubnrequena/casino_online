@@ -23,17 +23,27 @@
             <v-btn text @click="tipoBusq='texto'">BUSCAR</v-btn>
             <v-btn text @click="tipoBusq='rol'">ROLES</v-btn>
           </v-bottom-navigation>
-          <v-text-field
-            v-if="tipoBusq=='texto'"
-            clearable
-            autofocus
-            label="Buscar"
-            v-model="busqueda"
-            @click:clear="busqueda=''"
-          ></v-text-field>
+          <v-form @submit.prevent="buscarUsuarios" v-if="tipoBusq=='texto'">
+            <v-row>
+              <v-col cols="8">
+                <v-text-field
+                  clearable
+                  autofocus
+                  label="Buscar"
+                  v-model="busqueda"
+                  @click:clear="busqueda=''"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-btn type="submit" text block x-large>
+                  <v-icon left>mdi-magnify</v-icon>Buscar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
           <v-row v-else>
             <v-col v-for="rol in roles" :key="rol">
-              <v-btn block small>{{rol }}</v-btn>
+              <v-btn @click="onBuscarRol(rol)" block small>{{rol}}</v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -84,33 +94,25 @@ export default {
         "banca",
         "grupo",
         "agencia",
-        "pos"
-      ]
+        "taquilla"
+      ],
+      usuarios: []
     };
   },
   computed: {
     ...mapState("auth", ["usuario"]),
-    ...mapState("usuario", ["hijos"]),
-    usuarios() {
-      const busqueda = new RegExp(this.busqueda, "iu");
-      if (!this.busqueda || this.busqueda.length < 3) return [this.usuario];
-      else {
-        return this.hijos.filter(hijo => {
-          return (
-            busqueda.test(hijo.nombre) ||
-            busqueda.test(hijo.usuario) ||
-            busqueda.test(hijo.codigo)
-          );
-        });
-      }
-    },
     searchText() {
       if (this.value && this.value.nombre) return this.value.nombre;
       else return "Buscar usuario";
     }
   },
   methods: {
-    ...mapActions("usuario", ["buscarHijos"]),
+    ...mapActions("usuario", ["buscarTermino", "buscarRol"]),
+    buscarUsuarios() {
+      this.buscarTermino(this.busqueda).then(usuarios => {
+        this.usuarios = usuarios;
+      });
+    },
     abrir() {
       this.dialog = true;
     },
@@ -123,10 +125,15 @@ export default {
       this.$emit("input", value);
       this.$emit("change", value);
       this.close();
+    },
+    onBuscarRol(rol) {
+      this.buscarRol(rol).then(usuarios => {
+        this.usuarios = usuarios;
+      });
     }
   },
   created() {
-    this.buscarHijos();
+    this.usuarios = [this.usuario];
   }
 };
 </script>

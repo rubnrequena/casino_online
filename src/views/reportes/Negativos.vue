@@ -1,9 +1,13 @@
 <template>
   <div>
-    <v-toolbar dark dense>
+    <v-app-bar color="#6A76AB" dense dark src="https://picsum.photos/1920/1080?random">
+      <template v-slot:img="{ props }">
+        <v-img v-bind="props" gradient="to top right, rgba(0,0,0,.7), rgba(25,32,72,.7)"></v-img>
+      </template>
       <btn-atras label="Reporte Negativos"></btn-atras>
       <v-spacer></v-spacer>
-    </v-toolbar>
+      <moneda-picker v-model="moneda" @change="onBuscar"></moneda-picker>
+    </v-app-bar>
     <v-row>
       <v-col>
         Desde:
@@ -36,6 +40,7 @@ export default {
       usuarioID: null,
       desde: hoy,
       hasta: hoy,
+      moneda: {},
       reporteData: [],
       headers: [
         { text: "USUARIO", value: "usuario", total: false },
@@ -56,12 +61,12 @@ export default {
     ...mapActions("reporte", {
       get_reporte: "usuario_negativo"
     }),
-    buscarReporte() {
+    onBuscar() {
       this.get_reporte({
         usuario: this.usuarioID,
         desde: this.desde,
         hasta: this.hasta,
-        moneda: "ves"
+        moneda: this.moneda.siglas
       }).then(reportes => {
         this.reporteData = reportes;
       });
@@ -72,13 +77,13 @@ export default {
   },
   mounted() {
     this.usuarioID = this.usuario._id;
-    this.buscarReporte();
+    this.onBuscar();
   },
   watch: {
     $route(to) {
       const id = to.path.split("/").pop();
       this.usuarioID = id;
-      this.buscarReporte();
+      this.onBuscar();
     }
   }
 };

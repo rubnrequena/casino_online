@@ -17,9 +17,8 @@ module.exports = {
     id(usuarioId) {
       return getRequest(`/usuario/buscar/usuario/${usuarioId}?project=stats`);
     },
-    rol(rol, usuario) {
-      usuario = usuario ? { usuario } : null;
-      return getRequest(`/usuario/buscar/rol/${rol}`, usuario);
+    rol(rol) {
+      return getRequest(`/usuario/buscar/rol/${rol}`);
     },
     hijos() {
       return getRequest(`/usuario/buscar/hijos`);
@@ -32,6 +31,9 @@ module.exports = {
     },
     enlaces(usuario) {
       return getRequest("/usuario/enlaces", { usuario });
+    },
+    termino(termino) {
+      return getRequest('/usuario/buscar', { termino })
     },
   },
   permisos: {

@@ -17,7 +17,7 @@
 
 /operaciones/monitoreo
 ✅ mostrar sorteo abierto/cerrado
-- Numeros: añadir columna numeros solicitados
+✅ Numeros: añadir columna numeros solicitados
 
 /operadora/premiar
 ✅ activar la premiacion escribiendo los numeros

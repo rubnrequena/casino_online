@@ -26,7 +26,7 @@
         ></v-autocomplete>
       </v-col>
       <v-col cols="6">
-        <sorteo-picker v-model="sorteo" :operadora="tope.operadora"></sorteo-picker>
+        <sorteo-picker :disabled="sinOperadora" v-model="sorteo" :operadora="tope.operadora"></sorteo-picker>
       </v-col>
     </v-row>
     <v-data-table mobile-breakpoint="0" dense :items="topes" :headers="headers">
@@ -66,13 +66,7 @@
           <v-form id="tope-form" @submit.prevent="registrar_submit">
             <v-row>
               <v-col cols="12">
-                <v-btn
-                  text
-                  outlined
-                  block
-                  large
-                  @click="buscarDialog=true"
-                >{{`Usuario: ${hijo.nombre}` || 'Buscar Usuario'}}</v-btn>
+                <usuario-buscar v-model="hijo" @input="buscar" @close="buscarDialog=false"></usuario-buscar>
               </v-col>
             </v-row>
             <v-row>
@@ -82,16 +76,28 @@
             </v-row>
             <v-row>
               <v-col cols="6">
-                <v-text-field label="Operadora" readonly :value="operadoraNombre(tope.operadora)"></v-text-field>
+                <v-autocomplete
+                  label="Operadora"
+                  :items="operadoras"
+                  item-text="nombre"
+                  item-value="_id"
+                  clearable
+                  v-model="tope.operadora"
+                  @change="onOperadoraChange"
+                ></v-autocomplete>
               </v-col>
               <v-col cols="6">
-                <v-text-field label="Sorteo" readonly :value="sorteoNombre"></v-text-field>
+                <sorteo-picker
+                  :disabled="sinOperadora"
+                  v-model="sorteo"
+                  :operadora="tope.operadora"
+                ></sorteo-picker>
               </v-col>
             </v-row>
             <v-col cols="12">
               <v-text-field label="Numero" v-model="tope.numero"></v-text-field>
             </v-col>
-            <v-btn type="submit" block color="success">
+            <v-btn :disabled="sinOperadora" type="submit" block color="success">
               <v-icon left>mdi-check</v-icon>Confirmar
             </v-btn>
           </v-form>
@@ -146,6 +152,10 @@ export default {
     ...mapState("operadora", ["operadoras"]),
     sorteoNombre() {
       return this.sorteo ? this.sorteo.descripcion : "";
+    },
+    sinOperadora() {
+      const existe = this.tope.operadora == "" || this.tope.operadora == null;
+      return existe;
     }
   },
   methods: {
