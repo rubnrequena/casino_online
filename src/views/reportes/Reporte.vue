@@ -14,20 +14,23 @@
     <template v-slot:item.operadora="{item}">
       <v-btn text>{{item.operadora.nombre}}</v-btn>
     </template>
-    <template v-slot:item.venta="{item}">{{item.venta |formatNumber}}</template>
+    <template v-slot:item.sorteo="{item}">
+      <v-btn text>{{item.sorteo.descripcion}}</v-btn>
+    </template>
+    <template v-slot:item.venta="{item}">{{item.venta|formatNumber}}</template>
     <template v-slot:item.premio="{item}">
-      {{item.premio|formatNumber}}
-      <b>({{(item.premio*100/item.venta)|formatNumber("0.00")}}%)</b>
+      <table-tooltip :valor="item.premio" :referencia="item.venta">{{item.premio|formatNumber}}</table-tooltip>
     </template>
     <template v-slot:item.comision="{item}">
-      {{item.comision|formatNumber}}
-      <b>({{(item.comision*100/item.venta)|formatNumber("0.00")}}%)</b>
+      <table-tooltip :valor="item.comision" :referencia="item.venta"></table-tooltip>
     </template>
     <template v-slot:item.subtotal="{item}">
       <span :class="esNegativo(item.subtotal)">{{item.subtotal|formatNumber}}</span>
     </template>
     <template v-slot:item.participacion="{item}">
-      <span :class="esNegativo(item.participacion)">{{item.participacion|formatNumber}}</span>
+      <table-tooltip :valor="item.participacion" :referencia="item.subtotal">
+        <span :class="esNegativo(item.participacion)">{{item.participacion|formatNumber}}</span>
+      </table-tooltip>
     </template>
     <template v-slot:item.tickets="{item}">{{item.tickets|formatNumber}}</template>
     <template v-slot:item.total="{item}">
@@ -41,16 +44,7 @@
       <b>({{(item.cm_banca*100/item.venta)|formatNumber("0.00")}}%)</b>
     </template>
     <template v-slot:item.pt_banca="{item}">
-      <v-tooltip bottom>
-        <template v-slot:activator="{on, attrs}">
-          <span
-            v-on="on"
-            v-bind="attrs"
-            :class="esNegativo(item.pt_banca)"
-          >{{item.pt_banca|formatNumber}}</span>
-        </template>
-        <span>{{item.pt_banca*100/item.subtotal|formatNumber("0.00")}}%</span>
-      </v-tooltip>
+      <table-tooltip :valor="item.pt_banca" :referencia="item.subtotal"></table-tooltip>
     </template>
 
     <template v-slot:item.master="{item}">
@@ -81,16 +75,7 @@
       </v-tooltip>
     </template>
     <template v-slot:item.pt_loteria="{item}">
-      <v-tooltip bottom>
-        <template v-slot:activator="{on, attrs}">
-          <span
-            v-on="on"
-            v-bind="attrs"
-            :class="esNegativo(item.pt_loteria)"
-          >{{item.pt_loteria|formatNumber}}</span>
-        </template>
-        <span>{{item.pt_loteria*100/item.subtotal|formatNumber("0.00")}}%</span>
-      </v-tooltip>
+      <table-tooltip :valor="item.pt_loteria" :referencia="item.subtotal"></table-tooltip>
     </template>
 
     <template v-slot:body.append="{ headers  }">

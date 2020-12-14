@@ -17,8 +17,8 @@ export default {
     loterias(store, { desde, hasta, moneda }) {
       return reporteApi.loterias(desde, hasta, moneda);
     },
-    sorteos(store, { desde, hasta, moneda, operadora }) {
-      return reporteApi.sorteos(operadora, desde, hasta, moneda);
+    sorteos(store, { fecha, moneda, operadora }) {
+      return reporteApi.sorteos(operadora, fecha, moneda);
     },
   },
 };

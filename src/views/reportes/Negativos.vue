@@ -18,7 +18,7 @@
         <date-picker2 v-model="hasta"></date-picker2>
       </v-col>
       <v-col>
-        <v-btn style="margin-top:15px;" @click="buscarReporte" large dark block color="teal">
+        <v-btn style="margin-top:15px;" @click="onBuscar" large dark block color="teal">
           <v-icon>mdi-magnify</v-icon>Buscar
         </v-btn>
       </v-col>

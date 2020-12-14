@@ -10,12 +10,8 @@
     </v-app-bar>
     <v-row>
       <v-col>
-        Desde:
-        <date-picker2 v-model="desde"></date-picker2>
-      </v-col>
-      <v-col>
-        Hasta:
-        <date-picker2 v-model="hasta"></date-picker2>
+        Fecha:
+        <date-picker2 v-model="fecha"></date-picker2>
       </v-col>
       <v-col>
         <v-btn style="margin-top:15px;" @click="onBuscar" large dark block color="teal">
@@ -51,8 +47,7 @@ export default {
   },
   data() {
     return {
-      desde: hoy,
-      hasta: hoy,
+      fecha: hoy,
       reporteData: [],
       operadora: "",
       moneda: {},
@@ -79,8 +74,7 @@ export default {
     onBuscar() {
       this.get_reporte({
         operadora: this.operadora,
-        desde: this.desde,
-        hasta: this.hasta,
+        fecha: this.fecha,
         moneda: this.moneda.siglas
       }).then(reportes => {
         this.reporteData = reportes;
