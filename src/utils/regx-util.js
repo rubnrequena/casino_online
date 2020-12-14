@@ -1,5 +1,5 @@
 module.exports = {
-  regexec(str, regex) {
+  regexec(str, regex, one) {
     let m;
     let result = [];
     while ((m = regex.exec(str)) !== null) {
@@ -7,8 +7,10 @@ module.exports = {
       if (m.index === regex.lastIndex) {
         regex.lastIndex++;
       }
-      result.push(m.groups);
+      if (m.groups) result.push(m.groups);
+      else result.push(m)
     }
+    if (one) return result[0]
     return result;
   },
 };

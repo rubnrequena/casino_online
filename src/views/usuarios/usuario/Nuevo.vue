@@ -22,7 +22,13 @@
         <v-subheader>Cuenta</v-subheader>
         <v-row dense>
           <v-col cols="12" md="6">
-            <v-text-field dense label="Usuario" v-model="usuario.usuario" required></v-text-field>
+            <v-text-field
+              dense
+              label="Usuario"
+              v-model="usuario.usuario"
+              required
+              :error-messages="mensajesError"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field
@@ -91,9 +97,11 @@
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
+import { regexec } from "../../../utils/regx-util";
 export default {
   data() {
     return {
+      patronUsuario: /^\w{4,16}$/gm,
       buscarDialog: false,
       rolHijo: false,
       padre: {
@@ -102,6 +110,7 @@ export default {
       },
       typeClave: "password",
       usuario: {
+        usuario: "",
         comision: 0,
         participacion: 0,
         utilidad: 0,
@@ -113,7 +122,8 @@ export default {
         { text: "Master", value: "master" },
         { text: "Auditor", value: "auditor" }
       ],
-      gruposPago: []
+      gruposPago: [],
+      mensajesError: ""
     };
   },
   computed: {
@@ -136,12 +146,19 @@ export default {
     ...mapActions("saldo", ["getMonedas"]),
     ...mapActions("operadora", ["grupo_usuario"]),
     onSubmit() {
+      const patron = regexec(this.usuario.usuario, this.patronUsuario, true);
+      if (!patron) {
+        this.mensajesError =
+          "Minimo 4 caracteres, debes usar solo letras y numeros, sin espacios";
+        return;
+      }
       this.nuevo({
         ...this.usuario,
         padre: this.padre._id,
         rol: this.rolHijo
       })
         .then(usuario => {
+          this.mensajesError = null;
           this.usuario = {
             comision: 0,
             participacion: 0,
