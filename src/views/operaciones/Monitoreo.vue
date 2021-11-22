@@ -77,6 +77,9 @@
         <v-card flat tile>
           <v-data-table :dense="numeros.length>20" :items="numeros" :headers="headerNumeros">
             <template v-slot:item._id="{item}">
+              <v-btn x-small icon @click="premiar(item)">
+                <v-icon>mdi-flag-checkered</v-icon>
+              </v-btn>
               {{item._id}}
               <span
                 style="color:grey; font-style:italic;"
@@ -192,8 +195,25 @@ export default {
     ...mapActions("operadora", [
       "abrirSorteo",
       "cerrarSorteo",
-      "numeros_historia"
+      "numeros_historia",
+      "sorteo_premiar"
     ]),
+    premiar(numero) {
+      const payload = {
+        numero: numero._id,
+        sorteo: this.sorteo._id
+      };
+      this.sorteo_premiar(payload)
+        .then(() => {
+          this.$toasted.success("Sorteo premiado exitosamente", {
+            duration: 2000
+          });
+          this.buscarVentas();
+        })
+        .catch(error => {
+          this.$toasted.error(error, { duration: 2000 });
+        });
+    },
     cambiarStatus() {
       if (!this.sorteo) return;
       if (this.estatusSorteo)
